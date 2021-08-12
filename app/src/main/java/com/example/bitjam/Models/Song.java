@@ -1,44 +1,44 @@
 package com.example.bitjam.Models;
 
 public class Song {
-    private String mId;
-    private String mTitle;
-    private String mArtist;
-    private String mFileLink;
-    private String mCoverArt;
+    private String id;
+    private String title;
+    private String artist;
+    private String songUrl;
+    private String coverUrl;
     public boolean isLiked;
 
     public Song() {
         // required empty constructor for Firestore
     }
 
-    public Song(String id, String title, String artist, String fileLink, String coverArtLink, boolean isLiked) {
-        mId = id;
-        mTitle = title;
-        mArtist = artist;
-        mFileLink = fileLink;
-        mCoverArt = coverArtLink;
+    public Song(String id, String title, String artist, String songUrl, String coverUrl, boolean isLiked) {
+        this.id = id;
+        this.title = title;
+        this.artist = artist;
+        this.songUrl = songUrl;
+        this.coverUrl = coverUrl;
         this.isLiked = isLiked;
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
-    public String getSongName() {
-        return mTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getArtistName() {
-        return mArtist;
+    public String getArtist() {
+        return artist;
     }
 
-    public String getSongLink() {
-        return mFileLink;
+    public String getSongUrl() {
+        return songUrl;
     }
 
-    public String getCoverArtLink() {
-        return mCoverArt;
+    public String getCoverUrl() {
+        return coverUrl;
     }
 
     public boolean getIsLiked() {
@@ -54,7 +54,7 @@ public class Song {
      *
      * @return An empty placeholder song for {@link com.example.bitjam.Utils.PureLiveData} instantiation
      */
-    public static Song getEmptySong() {
+    public static Song getEmpty() {
         return new Song("", "", "", "", "", false);
     }
 }

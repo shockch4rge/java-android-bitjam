@@ -24,7 +24,6 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
-    AppBarConfiguration appBarConfig;
     NavHostFragment navHostFragment;
 
     @RequiresApi(api = Build.VERSION_CODES.R)

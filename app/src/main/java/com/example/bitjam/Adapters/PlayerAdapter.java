@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bitjam.R;
 import com.example.bitjam.Models.Song;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -59,9 +60,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
 
         // bind to ViewHolder
         public void bind(Song song) {
-            songNameHolder.setText(song.getSongName());
-            artistNameHolder.setText(song.getArtistName());
-            Picasso.get().load(song.getCoverArtLink()).into(coverArtHolder);
+            songNameHolder.setText(song.getTitle());
+            artistNameHolder.setText(song.getArtist());
+            Picasso.get().load(song.getCoverUrl()).into(coverArtHolder);
             itemView.setOnClickListener(v -> mRecyclerClickListener.onItemClick(song));
         }
     }

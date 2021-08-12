@@ -15,7 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.Adapters.PlaylistAdapter;
-import com.example.bitjam.Adapters.OnRecyclerClickListener;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.R;
 import com.example.bitjam.Utils.Anims;
@@ -82,7 +82,7 @@ public class PlaylistsFragment extends Fragment {
         // When there is a change in playlists, update PlaylistAdapter
         playlistVM.getPlaylists().observe(getViewLifecycleOwner(), playlists -> {
             playlistAdapter.updatePlaylists(playlists);
-            Anims.setLayoutAnimFall(B.playlistRecycler);
+            Anims.recyclerFall(B.playlistRecycler);
         });
 
         // Standard config for RecyclerView

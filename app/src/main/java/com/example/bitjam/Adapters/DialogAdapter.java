@@ -9,9 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bitjam.Fragments.Dialogs.DialogAddToPlaylist;
+import com.example.bitjam.Dialogs.DialogAddToPlaylist;
 import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.R;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.ViewHolder
 
         @SuppressLint("SetTextI18n")
         public void bind(Playlist playlist) {
-            int size = playlist.getSongs().size();
+            int size = playlist.getSongRefs().size();
             sizeHolder.setText(size + (size == 1 ? " song" : " songs"));
             titleHolder.setText(playlist.getTitle());
             itemView.setOnClickListener(v -> mOnRecyclerClickListener.onItemClick(playlist));

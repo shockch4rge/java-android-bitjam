@@ -131,7 +131,7 @@
                         app:srcCompat="@drawable/svg_mic" />
 
                     <ImageView
-                        android:id="@+id/shuffleIcon"
+                        android:id="@+id/btnShuffle"
                         android:layout_width="45dp"
                         android:layout_height="44dp"
                         android:layout_gravity="end"

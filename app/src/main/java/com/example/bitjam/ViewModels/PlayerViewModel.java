@@ -1,7 +1,6 @@
 package com.example.bitjam.ViewModels;
 
 import android.media.MediaPlayer;
-import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
 
@@ -21,7 +20,7 @@ public class PlayerViewModel extends ViewModel {
     public final PureLiveData<Boolean> isPlaying = new PureLiveData<>(false);
     public final PureLiveData<Boolean> isShuffling = new PureLiveData<>(false);
     public final PureLiveData<Boolean> isLooping = new PureLiveData<>(false);
-    private final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmptySong());
+    public final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmpty());
     private final Random random = new Random();
     private OnPlayerListener mPlayerListener;
 
@@ -30,7 +29,7 @@ public class PlayerViewModel extends ViewModel {
     // coupling. I have extracted a few functions in this class, but there is much more de-linking
     // to go.
 
-    // Constructor to initialise MediaPlayer's setOnCompletionListener().
+    // Initialise listener without calling a method
     public PlayerViewModel() {
         mp.setOnCompletionListener(mp -> mPlayerListener.onSongCompletion());
     }
@@ -54,20 +53,15 @@ public class PlayerViewModel extends ViewModel {
      *
      * @param song Set the current song to this.
      */
-    // MediaPlayer has to be reset, assigned a file URL to play and then prepared to be able to
-    // use it. We can do all three functions in the same method as they fall under the category of
-    // initialising MediaPlayer, and catch all throwables should they appear. Try/catch blocks are
-    // generally very messy, so separating them from the important stuff is recommended.
     public void prepareSong(Song song) {
         try {
             currentSong.setValue(song);
             mp.reset();
-            mp.setDataSource(currentSong.getValue().getSongLink());
+            mp.setDataSource(song.getSongUrl());
             mp.prepare();
         } catch (IOException | IllegalStateException | IllegalArgumentException | SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
-        mPlayerListener.onSongPrepared(currentSong.getValue());
     }
 
     public void togglePlayPause() {
@@ -173,21 +167,18 @@ public class PlayerViewModel extends ViewModel {
     }
 
     /**
-     * @return A song that has the same id as the current song
+     * @return First song that matches the current song's ID.
      */
-    // Java's stream method in Collection is incredibly intuitive, allowing a 100% success rate
-    // of matching particulars of a certain object. This method queries through mSongs, until it
-    // finds a song that has the same ID as the current song. It then returns that queried song.
     public Song getCurrentSong() {
         return mSongs.stream()
                 .filter(song -> song.getId().equals(currentSong.getValue().getId()))
                 .findFirst()
-                .orElse(null);
+                .orElse(Song.getEmpty());
     }
 
-    // This method returns the current song faster than getCurrentSong, but does not perform
-    // a stream filter. Not recommended to use.
-    public Song getThisSong() {
+    // Don't use this; when playNext is called, it plays the same song once more.
+    // Use getCurrentSong instead.
+    private Song getThisSong() {
         return currentSong.getValue();
     }
 
@@ -258,8 +249,6 @@ public class PlayerViewModel extends ViewModel {
         // Initialised in the constructor.
         // Runs when mp.onCompleteListener() is called.
         void onSongCompletion();
-
-        void onSongPrepared(Song preparedSong);
     }
 
     // initialises the listener

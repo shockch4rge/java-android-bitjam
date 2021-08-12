@@ -3,13 +3,11 @@ package com.example.bitjam.ViewModels;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.Utils.PureLiveData;
 import com.example.bitjam.Models.Song;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -17,15 +15,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SongViewModel extends ViewModel {
     private final String TAG = "(Firestore)";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final PureLiveData<List<Song>> myLikedSongs = new PureLiveData<>(new ArrayList<>());
-    private final PureLiveData<Song> mSelectedSong = new PureLiveData<>(Song.getEmptySong());
+    private final PureLiveData<Song> mSelectedSong = new PureLiveData<>(Song.getEmpty());
     private final PureLiveData<List<Song>> mySongs = new PureLiveData<>(new ArrayList<>());
     private final PureLiveData<List<Song>> myPermSongs = new PureLiveData<>(new ArrayList<>());
     private OnLikedListener mOnLikedListener;
@@ -39,16 +34,17 @@ public class SongViewModel extends ViewModel {
                 .addOnCompleteListener(task -> {
                     List<Song> tempSongs = new ArrayList<>();
                     // set db songs with localised instance
-                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(task.getResult())) {
-                        tempSongs.add(new Song(
+                    task.getResult().forEach(doc -> {
+                        Song song = new Song(
                                 doc.getId(),
                                 doc.getString("title"),
                                 doc.getString("artist"),
                                 doc.getString("fileUrl"),
                                 doc.getString("coverUrl"),
-                                doc.getBoolean("isLiked")
-                        ));
-                    }
+                                doc.getBoolean("isLiked"));
+
+                        tempSongs.add(song);
+                    });
                     if (myPermSongs.getValue().isEmpty()) {
                         myPermSongs.postValue(tempSongs);
                     }
@@ -87,44 +83,46 @@ public class SongViewModel extends ViewModel {
         mSelectedSong.setValue(song);
     }
 
+    // Favour select (stream) more, but this is more readable
+    private void oldSelect(Playlist playlist) {
+        List<Song> queue = new ArrayList<>();
+
+        for (DocumentReference songRef : playlist.getSongRefs()) {
+            for (Song song : myPermSongs.getValue()) {
+                if (song.getId().equals(songRef.getId())) {
+                    queue.add(song);
+                    break;
+                }
+            }
+        }
+        mSelectedSong.setValue(queue.get(0));
+        mySongs.postValue(queue);
+    }
+
     /**
      * Selects a playlist to pass through the ViewModel.
      *
      * @param playlist The playlist to select
      */
     public void select(Playlist playlist) {
-        List<Song> songsInPlaylist = new ArrayList<>();
+        List<Song> permSongs = myPermSongs.getValue();
+        List<Song> queue = new ArrayList<>();
 
-        for (DocumentReference songRef : playlist.getSongs()) {
-            for (Song song : myPermSongs.getValue()) {
-                if (song.getId().equals(songRef.getId())) {
-                    songsInPlaylist.add(song);
-                    break;
-                }
-            }
-        }
-        mSelectedSong.setValue(songsInPlaylist.get(0));
-        mySongs.postValue(songsInPlaylist);
-    }
+        playlist.getSongRefs().forEach(songRef -> {
+            Song matchedSong = permSongs.stream()
+                    .filter(song -> song.getId().equals(songRef.getId()))
+                    .findFirst()
+                    .orElse(Song.getEmpty());
 
-    public void selectStream(Playlist playlist) {
-        List<Song> songsInPlaylist = new ArrayList<>();
-        playlist.getSongs()
-                .forEach(songRef -> {
-                    for (Song song : myPermSongs.getValue()) {
-                        if (song.getId().equals(songRef.getId())) {
-                            songsInPlaylist.add(song);
-                            break;
-                        }
-                    }
-                });
-        mSelectedSong.setValue(songsInPlaylist.get(0));
-        mySongs.setValue(songsInPlaylist);
+            queue.add(matchedSong);
+        });
+        mSelectedSong.setValue(queue.get(0));
+        mySongs.postValue(queue);
     }
 
     /**
      * @return A song that had to have been selected with {@link #select(Song)} before. Will return
-     * {@link Song#getEmptySong()} otherwise.
+     * {@link Song#getEmpty()} otherwise.
      */
     public PureLiveData<Song> getSelectedSong() {
         return mSelectedSong;

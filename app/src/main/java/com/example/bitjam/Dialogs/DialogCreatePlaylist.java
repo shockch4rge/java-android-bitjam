@@ -1,4 +1,4 @@
-package com.example.bitjam.Fragments.Dialogs;
+package com.example.bitjam.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,27 +19,27 @@ public class DialogCreatePlaylist extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View v = inflater.inflate(R.layout.misc_dialog_create_playlist, null);
+
+        EditText titleField = v.findViewById(R.id.dialogEnterNameField);
+
+        /* Start building */
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.misc_dialog_create_playlist, null);
-
-        EditText titleField = view.findViewById(R.id.dialogEnterNameField);
-
-        // Constructs the layout of the dialog.
-        // Includes 2 buttons: 'Create' & 'Cancel'.
-        builder.setView(view)
+        builder.setView(v)
                 .setPositiveButton("CREATE",
                         (dialog, which) -> mDialogListener.onCreateSelected(titleField))
                 .setNegativeButton("CANCEL",
                         (dialog, which) -> dialog.dismiss())
                 .setOnDismissListener(dialog -> titleField.getText().clear());
 
+        /* End building */
+
         return builder.create();
     }
 
-    // Interface for the parent fragment to implement. An EditText must be passed in to allow
-    // the interaction.
     public interface DialogCreatePlaylistListener {
         void onCreateSelected(EditText titleField);
     }

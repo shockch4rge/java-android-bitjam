@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pinkDeep">#FF2626</color>
+    <color name="pinkBright">#FF4242</color>
+    <color name="pinkBold">#FF4F4F</color>
+    <color name="pinkDefault">#F66F6F</color>
+    <color name="pinkSmooth">#FF9393</color>
+    <color name="pinkHollow">#FFBDBD</color>
+    <color name="pinkPale">#FFEAEA</color>
+    <color name="pinkGhost">#FFF9F9</color>
+
+    <color name="blueDeepNavy">#02052F</color>
+    <color name="blueAbyss">#050517</color>
+
+    <color name="maroon">#592020</color>
+    <color name="maroonPale">#968080</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="lightGrey">#D3D3D3</color>
+    <color name="grey">#212121</color>
+    <color name="transparent">#00000000</color>
+</resources>

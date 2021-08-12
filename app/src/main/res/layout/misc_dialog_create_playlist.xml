@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/biko_regular"
+        android:paddingStart="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
+        android:text="New Playlist"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/dialogEnterNameField"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialogTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/biko_regular"
+        android:hint="Playlist Name"
+        android:textColorHint="@color/pinkPale"
+        android:textSize="20dp" />
+
+</RelativeLayout>

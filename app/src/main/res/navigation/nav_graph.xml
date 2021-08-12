@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_library">
+
+    <fragment
+        android:id="@+id/nav_library"
+        android:name="com.example.bitjam.Fragments.LibraryFragment"
+        android:label="LibraryFragment">
+        <action
+            android:id="@+id/NavigateToPlayerFromLibrary"
+            app:destination="@id/nav_player"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/NavigateToLikedFromLibrary"
+            app:destination="@id/nav_liked" />
+        <action
+            android:id="@+id/NavigateToPLaylistsFromLibrary"
+            app:destination="@id/nav_playlists"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_player"
+        android:name="com.example.bitjam.Fragments.PlayerFragment"
+        android:label="PlayerFragment" />
+    <fragment
+        android:id="@+id/nav_liked"
+        android:name="com.example.bitjam.Fragments.LikedFragment"
+        android:label="LikedFragment">
+        <action
+            android:id="@+id/NavigateToPlayerFromLiked"
+            app:destination="@id/nav_player"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_playlists"
+        android:name="com.example.bitjam.Fragments.PlaylistsFragment"
+        android:label="PlaylistsFragment">
+        <action
+            android:id="@+id/NavigateToPlayerFromPlaylists"
+            app:destination="@id/nav_player"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
+</navigation>

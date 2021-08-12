@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="search_recycler_image_curved">
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="song_display_curved_corners">
+        <item name="cornerSize">25dp</item>
+    </style>
+    <style name="Theme.BitJam.Final" parent="Theme.BitJam">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+</resources>

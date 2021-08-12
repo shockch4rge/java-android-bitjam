@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">BitJam</string>
+    <string name="no_songs_selected">No songs selected</string>
+    <string name="library_header">LIBRARY</string>
+    <string name="welcome_to_bitjam">Welcome To BitJam.</string>
+    <string name="row_1_text">Search for the songs that suit your mood.</string>
+    <string name="row_2_text">Easily return to your favourite songs by \'Liking\' them.</string>
+    <string name="row_3_text">Get full song lyrics at the tap of a button.</string>
+    <string name="row_4_text">Feeling adventurous? Try out the shuffle feature.</string>
+    <string name="heart_icon_desc">Heart Icon</string>
+    <string name="search_icon_desc">Search Icon</string>
+    <string name="mic_icon_desc">Microphone Icon</string>
+    <string name="shuffle_icon_desc">Shuffle Icon</string>
+    <string name="welc_btn_gradient_desc">Button Gradient</string>
+    <string name="welc_btn_face_desc">Button Face</string>
+    <string name="welc_btn_text">Let\'s Go!</string>
+    <string name="recycler_row_song_name">No Song Playing</string>
+    <string name="recycler_row_artist_name">No Artist</string>
+    <string name="recycler_row_cover_art_desc">Song/Album Cover Art</string>
+    <string name="play_button_desc">Play Button</string>
+    <string name="defaultTimeLabel">0:00</string>
+    <string name="previous_song">Previous Song</string>
+    <string name="next_song">Next Song</string>
+    <string name="loop">Loop</string>
+    <string name="loop_icon_desc">Loop Icon</string>
+    <string name="search_bar_desc">Find a song . . .</string>
+    <string name="queue">QUEUE</string>
+    <string name="playlist_instructions">Give your playlist a name.</string>
+    <string name="all_songs">ALL SONGS</string>
+    <string name="sign_in_disclaimer">We need you to sign in with Google before you can proceed.</string>
+    <string name="hey">Hey!</string>
+    <string-array name="playlist_choices">
+        <item>Create New Playlist</item>
+        <item>Add to Existing Playlist</item>
+    </string-array>
+</resources>

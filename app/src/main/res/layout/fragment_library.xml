@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/headerSection"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-20dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp">
+
+        <TextView
+            android:id="@+id/search_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:elevation="3dp"
+            android:fontFamily="@font/biko_bold"
+            android:text="@string/library_header"
+            android:textAlignment="center"
+            android:textColor="@color/pinkDefault"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="90dp"
+            android:autofillHints=""
+            android:background="@drawable/search_bar_bg"
+            android:drawableStart="@drawable/focusable_search_bar_icon"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:fontFamily="@font/biko_regular"
+            android:hint="@string/search_bar_desc"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/pinkDeep"
+            android:textColorHint="@color/pinkHollow"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:elevation="2dp"
+            android:fontFamily="@font/biko_bold"
+            android:text="@string/all_songs"
+            android:textColor="@color/pinkDefault"
+            android:textSize="12sp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="680dp"
+        android:layout_below="@id/headerSection"
+        android:layout_alignParentBottom="true"
+        android:layoutAnimation="@anim/layout_fall"
+        android:overScrollMode="always"
+        tools:listitem="@layout/search_recycler_items" />
+
+</RelativeLayout>

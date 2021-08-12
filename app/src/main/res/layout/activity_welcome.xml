@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/welcome_bg_gradient"
+    tools:context=".WelcomeActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/welcome_card_container"
+        android:layout_width="350dp"
+        android:layout_height="650dp"
+        android:layout_centerInParent="true"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/welcome_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:fontFamily="@font/biko_bold"
+                android:text="@string/welcome_to_bitjam"
+                android:textAlignment="center"
+                android:textColor="#F66F6F"
+                android:textSize="46sp" />
+
+            <RelativeLayout
+                android:id="@+id/text_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/welcome_text">
+
+                <LinearLayout
+                    android:id="@+id/row_texts"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical"
+                    android:paddingTop="60dp"
+                    android:paddingBottom="60dp">
+
+                    <TextView
+                        android:id="@+id/Row1"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/biko_regular"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/row_1_text"
+                        android:textColor="#F66F6F"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/Row2"
+                        android:layout_width="245dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/biko_regular"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/row_2_text"
+                        android:textColor="#F66F6F"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/Row3"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/biko_regular"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/row_3_text"
+                        android:textColor="#F66F6F"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/Row4"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/biko_regular"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/row_4_text"
+                        android:textColor="#F66F6F"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical"
+                    android:paddingStart="42dp"
+                    android:paddingTop="60dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="60dp">
+
+                    <ImageView
+                        android:id="@+id/searchIcon"
+                        android:layout_width="35dp"
+                        android:layout_height="39dp"
+                        android:layout_gravity="end"
+                        android:contentDescription="@string/search_icon_desc"
+                        app:srcCompat="@drawable/svg_search"
+                        app:tint="@color/pinkDefault" />
+
+                    <ImageView
+                        android:id="@+id/heartIcon"
+                        android:layout_width="38dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="27dp"
+                        android:contentDescription="@string/heart_icon_desc"
+                        app:srcCompat="@drawable/svg_heart_unselected"
+                        app:tint="@color/pinkDefault" />
+
+                    <ImageView
+                        android:id="@+id/micIcon"
+                        android:layout_width="33dp"
+                        android:layout_height="43dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="24dp"
+                        android:contentDescription="@string/mic_icon_desc"
+                        app:srcCompat="@drawable/svg_mic" />
+
+                    <ImageView
+                        android:id="@+id/shuffleIcon"
+                        android:layout_width="45dp"
+                        android:layout_height="44dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="18dp"
+                        android:contentDescription="@string/shuffle_icon_desc"
+                        app:srcCompat="@drawable/svg_shuffle" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/welcome_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="50dp">
+
+                <ImageView
+                    android:id="@+id/btnWelcomeGradient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="7dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:contentDescription="@string/welc_btn_gradient_desc"
+                    app:srcCompat="@drawable/svg_btn_gradient" />
+
+                <ImageButton
+                    android:id="@+id/btnWelcomeFace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/svg_welcome_button"
+                    android:contentDescription="@string/welc_btn_face_desc" />
+
+                <TextView
+                    android:id="@+id/btnWelcomeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/biko_bold"
+                    android:text="@string/welc_btn_text"
+                    android:textColor="#FFFFFF"
+                    android:textSize="30sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

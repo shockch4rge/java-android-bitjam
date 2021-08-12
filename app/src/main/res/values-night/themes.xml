@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+     Base application theme.
+    <style name="Theme.BitJam" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/blueDeepNavy</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/blueAbyss</item>
+        <item name="colorSecondaryVariant">@color/blueAbyss</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/pinkDefault</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

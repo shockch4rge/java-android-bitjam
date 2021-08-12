@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ADD_TO_NEW_PLAYLIST"
+        android:title="Add to New Playlist"
+        android:icon="@drawable/svg_plus"/>
+
+    <item
+        android:id="@+id/ADD_TO_EXISTING_PLAYLIST"
+        android:title="Add to Existing Playlist"
+        android:icon="@drawable/svg_add_to_playlist"/>
+</menu>

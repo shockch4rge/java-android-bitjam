@@ -1,13 +1,16 @@
 # BitJam
-A music player incorporating basic/intermediate Java functionalities with a highly object-oriented structure for Android devices.
+A music player incorporating basic/intermediate Java functionalities with a highly object-oriented structure for Android devices. Utilises Firestore as a database for the songs.
 
-# Features
+# What it does
 1. Google sign-in system (no email logged)
 2. Search system to filter through existing songs
 3. Queue preview
 4. 'Like' songs
-6. Create playlists/add songs to existing ones
+5. Create playlists/add songs to existing ones
+6. Songs are dynamically loaded in from Firestore
 
-I recommend beginner Android developers to look through this app's code. A lot of it is 're-compiled' Stack Overflow questions and answers that newbies would search for, so this project may help you fix certain things! A few Java fundamentals are required.
+I recommend beginner Android developers to look through this app's code. A lot of it is 're-compiled' Stack Overflow questions and answers that newbies would search for, so this project may help you fix certain things! 
+
+A few Java fundamentals and basic Firestore knowledge are required. If you don't know Firestore: https://firebase.google.com
 
 Note: This Android app does not 100% follow the MVVM architecture. It looks like a mess right now but this might/will be fixed in the future.

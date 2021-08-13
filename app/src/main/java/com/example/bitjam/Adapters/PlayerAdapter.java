@@ -30,7 +30,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.player_recycler_items, parent, false);
+        View view = inflater.inflate(R.layout.default_recycler_items, parent, false);
 
         return new ViewHolder(view);
     }
@@ -70,9 +70,11 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder
     // notifyDataSetChanged is an incredibly expensive and slow method. Instead, we should manually
     // call notifyItemRangeRemoved and notifyItemRangeInserted. This also preserves any animations,
     // should we pass in any.
-    public void updateSongs(List<Song> songs) {
+    public void updateWith(List<Song> songs) {
+        int originalSize = mSongs.size();
+
         mSongs.clear();
-        notifyItemRangeRemoved(0, songs.size());
+        notifyItemRangeRemoved(0, originalSize);
         mSongs.addAll(songs);
         notifyItemRangeInserted(0, songs.size());
     }

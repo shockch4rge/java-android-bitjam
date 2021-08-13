@@ -72,8 +72,11 @@ public class DialogAdapter extends RecyclerView.Adapter<DialogAdapter.ViewHolder
     }
 
     public void updateAdapter(List<Playlist> playlists) {
+        int originalSize = mPlaylists.size();
+
         mPlaylists.clear();
+        notifyItemRangeRemoved(0, originalSize);
         mPlaylists.addAll(playlists);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, playlists.size());
     }
 }

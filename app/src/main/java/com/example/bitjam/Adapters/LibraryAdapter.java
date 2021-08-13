@@ -37,7 +37,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // inflates rows to be visible on screen
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.search_recycler_items, parent, false);
+        View view = layoutInflater.inflate(R.layout.default_recycler_items, parent, false);
 
         return new ViewHolder(view);
     }
@@ -57,9 +57,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            coverArtHolder = itemView.findViewById(R.id.recycler_row_cover_art);
-            songNameHolder = itemView.findViewById(R.id.recycler_row_song);
-            artistNameHolder = itemView.findViewById(R.id.recycler_row_artist);
+            coverArtHolder = itemView.findViewById(R.id.displayCoverArtHolder);
+            songNameHolder = itemView.findViewById(R.id.displaySongHolder);
+            artistNameHolder = itemView.findViewById(R.id.displayArtistHolder);
         }
 
         // binds row details based on the song
@@ -80,9 +80,12 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
     }
 
     // used as a callback in live observers
-    public void updateSongs(List<Song> songs) {
+    public void updateWith(List<Song> songs) {
+        int originalSize = mSongs.size();
+
         mSongs.clear();
+        notifyItemRangeRemoved(0, originalSize);
         mSongs.addAll(songs);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, songs.size());
     }
 }

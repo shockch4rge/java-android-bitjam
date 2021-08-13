@@ -103,9 +103,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     }
 
     // Callback to add playlists to the localised recycler list
-    public void updatePlaylists(List<Playlist> playlists) {
+    public void updateWith(List<Playlist> playlists) {
+        int originalSize = mPlaylists.size();
+
         mPlaylists.clear();
+        notifyItemRangeRemoved(0, originalSize);
         mPlaylists.addAll(playlists);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, playlists.size());
     }
 }

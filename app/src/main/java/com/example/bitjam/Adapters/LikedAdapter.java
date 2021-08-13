@@ -37,7 +37,7 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.search_recycler_items, parent, false);
+        View v = inflater.inflate(R.layout.default_recycler_items, parent, false);
 
         return new ViewHolder(v);
     }
@@ -74,9 +74,11 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
         return mLikedSongs.size();
     }
 
-    public void updateAdapter(List<Song> likedSongs) {
+    public void updateWith(List<Song> likedSongs) {
+        int originalSize = mLikedSongs.size();
+
         mLikedSongs.clear();
-        notifyItemRangeRemoved(0, likedSongs.size());
+        notifyItemRangeRemoved(0, originalSize);
         mLikedSongs.addAll(likedSongs);
         notifyItemRangeInserted(0, likedSongs.size());
     }

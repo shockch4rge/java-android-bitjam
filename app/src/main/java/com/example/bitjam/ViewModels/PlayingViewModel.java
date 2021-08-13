@@ -9,12 +9,13 @@ import com.example.bitjam.Models.Song;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class PlayingViewModel extends ViewModel {
     private final String TAG = "(PlayerViewModel)";
-    private final MediaPlayer mp = new PureLiveData<>(new MediaPlayer()).getValue();
+    private final MediaPlayer mp = new MediaPlayer();
     private final List<Song> mPermSongs = new PureLiveData<>(new ArrayList<Song>()).getValue();
     private final List<Song> mSongs = new PureLiveData<>(new ArrayList<Song>()).getValue();
     public final PureLiveData<Boolean> isPlaying = new PureLiveData<>(false);
@@ -22,7 +23,7 @@ public class PlayingViewModel extends ViewModel {
     public final PureLiveData<Boolean> isLooping = new PureLiveData<>(false);
     public final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmpty());
     private final Random random = new Random();
-    private OnPlayingListener mPlayerListener;
+    private PlayerListener mPlayerListener;
 
     // Rather than stuff everything into one method, we should separate responsibilities
     // across multiple ones. This allows for more modularity over our code and helps to reduce
@@ -62,6 +63,7 @@ public class PlayingViewModel extends ViewModel {
         } catch (IOException | IllegalStateException | IllegalArgumentException | SecurityException | NullPointerException e) {
             e.printStackTrace();
         }
+        mPlayerListener.onSongPrepared();
     }
 
     public void togglePlayPause() {
@@ -156,7 +158,7 @@ public class PlayingViewModel extends ViewModel {
     // mSongs is updated with a shuffled version of itself;
     // mPermSongs is unaffected.
     public void enableShuffle() {
-        shuffle(mSongs);
+        Collections.shuffle(mSongs);
         isShuffling.setValue(true);
         mPlayerListener.onShuffled(mSongs);
     }
@@ -182,58 +184,29 @@ public class PlayingViewModel extends ViewModel {
         return currentSong.getValue();
     }
 
+    /**
+     * @return Duration of the current file
+     * @throws IllegalStateException The file is invalid
+     */
     public int getDuration() {
-        return mp.getDuration();
+        int duration = mp.getDuration();
+
+        if (duration == -1) {
+            throw new IllegalStateException(TAG + " MediaPlayer file URL is not valid.");
+        }
+
+        return duration;
     }
 
     public int getCurrentPos() {
         return mp.getCurrentPosition();
     }
 
-    /**
-     * Assigns the {@code songs} parameter's size to an integer {@code n}.
-     * <br>
-     * Then, iterate through the list size while {@code int i < n}.
-     * <br>
-     * Store a random integer {@code change} with a boundary of 0 to {@code n - i}.
-     * <br>
-     * Refer to {@link #swap(List, int, int)} for the swapping algorithm.
-     *
-     * @param songs the list of songs to process
-     */
-    // Of course, we could just use Collections.shuffle... but what fun would that be?
-    private List<Song> shuffle(List<Song> songs) {
-        int n = songs.size();
-        for (int i = 0; i < n; i++) {
-            int change = random.nextInt(n - i);
-            swap(songs, i, change);
-        }
-        return songs;
-    }
-
-    /**
-     * A helper method for {@link #shuffle(List)}.
-     * <br>
-     * A list of songs is processed, then a song is grabbed at the 'i' index and stored in a temp field.
-     * <br>
-     * Once a value is assigned, replace the 'i' index of the list with the song at 'change' index.
-     * <br>
-     * Then, swap the song at 'change' index with the temp song field.
-     * <br>
-     * To be used in conjunction with a {@code for} loop for modularity.
-     *
-     * @param songs  the list of songs to process
-     * @param i      index that gets a temp song
-     * @param change swaps i, and swaps the temp song
-     */
-    private void swap(List<Song> songs, int i, int change) {
-        Song helper = songs.get(i);
-        songs.set(i, songs.get(change));
-        songs.set(change, helper);
-    }
-
     // PlayerFragment implements these listeners
-    public interface OnPlayingListener {
+    public interface PlayerListener {
+
+        void onSongPrepared();
+
         // Runs when playNext() is called
         void onNext();
 
@@ -252,7 +225,7 @@ public class PlayingViewModel extends ViewModel {
     }
 
     // initialises the listener
-    public void setOnPlayerListener(OnPlayingListener listener) {
+    public void setPlayerListener(PlayerListener listener) {
         this.mPlayerListener = listener;
     }
 }

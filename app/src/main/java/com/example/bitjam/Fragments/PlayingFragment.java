@@ -21,6 +21,7 @@ import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.MainActivity;
+import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.R;
 import com.example.bitjam.Adapters.PlayerAdapter;
 import com.example.bitjam.Utils.OnRecyclerClickListener;
@@ -29,17 +30,18 @@ import com.example.bitjam.Dialogs.DialogCreatePlaylist;
 import com.example.bitjam.Utils.Anims;
 import com.example.bitjam.Utils.Misc;
 import com.example.bitjam.Utils.PopupBuilder;
+import com.example.bitjam.Utils.PureLiveData;
 import com.example.bitjam.ViewModels.PlaylistViewModel;
 import com.example.bitjam.databinding.FragmentPlayerBinding;
 import com.example.bitjam.Models.Song;
 import com.example.bitjam.ViewModels.PlayingViewModel;
 import com.example.bitjam.ViewModels.SongViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.List;
-import java.util.Objects;
 
 
 public class PlayingFragment extends Fragment {
@@ -70,38 +72,39 @@ public class PlayingFragment extends Fragment {
     };
 
     // Listens to specific events defined in PlayerViewModel
-    private final PlayingViewModel.OnPlayingListener onPlayingListener = new PlayingViewModel.OnPlayingListener() {
+    private final PlayingViewModel.PlayerListener playerListener = new PlayingViewModel.PlayerListener() {
+        @Override
+        public void onSongPrepared() {
+            B.seekBar.setMax(playerVM.getDuration());
+            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
+            setLikedBtnBasedOnFlag();
+        }
+
         // updates elapsed/remaining time when next/previous is pressed
         @Override
         public void onNext() {
-            B.seekBar.setMax(playerVM.getDuration());
-            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnBasedOnFlag();
         }
 
         @Override
         public void onPrevious() {
-            B.seekBar.setMax(playerVM.getDuration());
-            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnBasedOnFlag();
         }
 
         @Override
         public void onShuffled(List<Song> songs) {
-            playerAdapter.updateSongs(songs);
+            playerAdapter.updateWith(songs);
         }
 
         @Override
         public void onUnshuffled(List<Song> songs) {
-            playerAdapter.updateSongs(songs);
+            playerAdapter.updateWith(songs);
         }
 
         // automatically plays the next song
         @Override
         public void onSongCompletion() {
-            handler.removeCallbacks(refreshSeekBar);
+            handler.removeCallbacks(updatingSeekBar);
             playerVM.playNext();
         }
     };
@@ -118,7 +121,7 @@ public class PlayingFragment extends Fragment {
         // Stops updating time labels even when song is playing
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-            handler.removeCallbacks(refreshSeekBar);
+            handler.removeCallbacks(updatingSeekBar);
         }
 
         // Updates time labels when finger is lifted off SeekBar thumb; also restarts recursive callbacks
@@ -126,7 +129,7 @@ public class PlayingFragment extends Fragment {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             playerVM.moveTo(seekBar.getProgress());
-            handler.postDelayed(refreshSeekBar, 500);
+            handler.postDelayed(updatingSeekBar, 500);
         }
     };
 
@@ -161,6 +164,13 @@ public class PlayingFragment extends Fragment {
         // Listens to 'Add to Existing Playlist' selection in the popup menu
         @Override
         public void onAddToExistingPlaylistSelected() {
+            boolean playlistsExist = !playlistVM.getPlaylists().getValue().isEmpty();
+
+            if (playlistsExist) {
+                playlistVM.getPlaylists().getValue();
+            } else {
+                playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
+            }
 
             // Must cast to Playlist class before using parameter
             DialogAddToPlaylist dialog = new DialogAddToPlaylist(playlist -> {
@@ -201,15 +211,16 @@ public class PlayingFragment extends Fragment {
         playerVM = new ViewModelProvider(requireActivity()).get(PlayingViewModel.class);
         playlistVM = new ViewModelProvider(requireActivity()).get(PlaylistViewModel.class);
 
-        // Initialises the queue and loads playlists
+        // Initialises the queue
         playerVM.updateQueue(songVM.getSongs().getValue());
 
         // Observers
         songVM.getSongs().observe(this, songs -> {
-            playerAdapter.updateSongs(songs);
+            playerAdapter.updateWith(songs);
             B.playerRecycler.scrollToPosition(0);
             Anims.recyclerFall(B.playerRecycler);
         });
+
 
         playerVM.currentSong.observe(this, this::updateUiFromSong);
         playerVM.isPlaying.observe(this, this::onIsPlayingChange);
@@ -218,7 +229,7 @@ public class PlayingFragment extends Fragment {
 
         // Listeners
         songVM.setOnLikedListener(onLikedListener);
-        playerVM.setOnPlayerListener(onPlayingListener);
+        playerVM.setPlayerListener(playerListener);
         B.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
 
         // Separate functions from animations to reduce unnecessary clutter
@@ -231,22 +242,20 @@ public class PlayingFragment extends Fragment {
         B.btnLike.setOnClickListener(this::toggleLikeOnSong);
 
         // Button animations
+        B.btnPlaylistOptions.setOnTouchListener(Anims::smallShrink);
         B.btnPlayPause.setOnTouchListener(Anims::smallShrink);
         B.btnNext.setOnTouchListener(Anims::smallShrink);
         B.btnPrevious.setOnTouchListener(Anims::smallShrink);
         B.btnLoop.setOnTouchListener(Anims::smallShrink);
         B.btnShuffle.setOnTouchListener(Anims::smallShrink);
         B.btnLike.setOnTouchListener(Anims::smallShrink);
-        B.btnPlaylistOptions.setOnTouchListener(Anims::smallShrink);
 
         // Extracts selected song details
         Song newSong = songVM.getSelectedSong().getValue();
         playerVM.prepareSong(newSong);
-        B.seekBar.setMax(playerVM.getDuration());
-        B.rtl.setText(getTimeFormat(playerVM.getDuration()));
 
         // PlayerAdapter
-        B.playerRecycler.setLayoutManager(new LinearLayoutManager(PlayingFragment.this.getContext()));
+        B.playerRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         playerAdapter = new PlayerAdapter(onRecyclerClickListener);
         B.playerRecycler.setAdapter(playerAdapter);
 
@@ -257,10 +266,10 @@ public class PlayingFragment extends Fragment {
 
     private void onIsPlayingChange(boolean isPlaying) {
         if (isPlaying) {
-            handler.postDelayed(refreshSeekBar, 500);
+            handler.postDelayed(updatingSeekBar, 500);
             B.btnPlayPause.setImageResource(R.drawable.svg_btn_pause);
         } else {
-            handler.removeCallbacks(refreshSeekBar);
+            handler.removeCallbacks(updatingSeekBar);
             B.btnPlayPause.setImageResource(R.drawable.svg_btn_play);
         }
     }
@@ -340,7 +349,7 @@ public class PlayingFragment extends Fragment {
     }
 
     // Update SeekBar and time labels every 0.5s
-    private final Runnable refreshSeekBar = new Runnable() {
+    private final Runnable updatingSeekBar = new Runnable() {
         @Override
         public void run() {
             B.seekBar.setProgress(playerVM.getCurrentPos());

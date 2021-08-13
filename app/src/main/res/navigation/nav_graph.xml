@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_player"
-        android:name="com.example.bitjam.Fragments.PlayerFragment"
+        android:name="com.example.bitjam.Fragments.PlayingFragment"
         android:label="PlayerFragment" />
     <fragment
         android:id="@+id/nav_liked"

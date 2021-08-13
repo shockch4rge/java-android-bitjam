@@ -71,7 +71,7 @@ public class LibraryFragment extends Fragment {
 
         // UI
         ui = this.requireActivity().getWindow();
-        ui.setStatusBarColor(getResources().getColor(R.color.white, null));
+        ui.setStatusBarColor(requireActivity().getResources().getColor(R.color.white, null));
 
         // ViewModels
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);

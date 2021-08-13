@@ -32,7 +32,7 @@ import com.example.bitjam.Utils.PopupBuilder;
 import com.example.bitjam.ViewModels.PlaylistViewModel;
 import com.example.bitjam.databinding.FragmentPlayerBinding;
 import com.example.bitjam.Models.Song;
-import com.example.bitjam.ViewModels.PlayerViewModel;
+import com.example.bitjam.ViewModels.PlayingViewModel;
 import com.example.bitjam.ViewModels.SongViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.Query;
@@ -42,11 +42,11 @@ import com.squareup.picasso.Target;
 import java.util.List;
 
 
-public class PlayerFragment extends Fragment {
+public class PlayingFragment extends Fragment {
     private final String TAG = "(BitJam)";
     private FragmentPlayerBinding B;
     private SongViewModel songVM;
-    private PlayerViewModel playerVM;
+    private PlayingViewModel playerVM;
     private PlaylistViewModel playlistVM;
     private BottomNavigationView navBar;
     private PlayerAdapter playerAdapter;
@@ -69,7 +69,7 @@ public class PlayerFragment extends Fragment {
     };
 
     // Listens to specific events defined in PlayerViewModel
-    private final PlayerViewModel.OnPlayerListener onPlayerListener = new PlayerViewModel.OnPlayerListener() {
+    private final PlayingViewModel.OnPlayingListener onPlayingListener = new PlayingViewModel.OnPlayingListener() {
         // updates elapsed/remaining time when next/previous is pressed
         @Override
         public void onNext() {
@@ -107,6 +107,9 @@ public class PlayerFragment extends Fragment {
     private final SeekBar.OnSeekBarChangeListener onSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                B.etl.setText(getTimeFormat(progress));
+            }
         }
 
         // Stops updating time labels even when song is playing
@@ -141,9 +144,11 @@ public class PlayerFragment extends Fragment {
                     Misc.toast(requireView(), "Name cannot be empty!");
                 } else {
                     playlistVM.createNewPlaylist(title, thisSong.getId());
-                    Misc.toast(requireView(), "'" + title + "' created with '" + thisSong.getTitle() + "' added!");
+                    Misc.toast(requireView(),
+                            String.format("%s created with '%s' added!",
+                                    title, thisSong.getTitle()));
                 }
-                MainActivity.hideKeyboardIn(requireView());
+                MainActivity.hideKeyboardIn(PlayingFragment.this.requireView());
             });
 
             dialog.show(getParentFragmentManager(), "OK");
@@ -159,7 +164,7 @@ public class PlayerFragment extends Fragment {
                 playlistVM.addSongToExistingPlaylist(
                         playlist.getId(), thisSong.getId());
                 Misc.toast(requireView(),
-                        String.format("'%s' added to '%s'!",
+                        String.format("%s added to '%s'!",
                                 thisSong.getTitle(), playlist.getTitle()));
             });
 
@@ -193,7 +198,7 @@ public class PlayerFragment extends Fragment {
 
         // ViewModels
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);
-        playerVM = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
+        playerVM = new ViewModelProvider(requireActivity()).get(PlayingViewModel.class);
         playlistVM = new ViewModelProvider(requireActivity()).get(PlaylistViewModel.class);
 
         // Initialises the queue
@@ -214,17 +219,17 @@ public class PlayerFragment extends Fragment {
 
         // Listeners
         songVM.setOnLikedListener(onLikedListener);
-        playerVM.setOnPlayerListener(onPlayerListener);
+        playerVM.setOnPlayerListener(onPlayingListener);
         B.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
 
         // Button listeners
+        B.btnPlaylistOptions.setOnClickListener(view -> PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
         B.btnPlayPause.setOnClickListener(view -> playerVM.togglePlayPause());
         B.btnNext.setOnClickListener(view -> playerVM.playNext());
         B.btnPrevious.setOnClickListener(view -> playerVM.playPrevious());
         B.btnLoop.setOnClickListener(view -> playerVM.toggleLoop());
         B.btnShuffle.setOnClickListener(view -> playerVM.toggleShuffle());
         B.btnLike.setOnClickListener(this::toggleLikeOnSong);
-        B.btnPlaylistOptions.setOnClickListener(view -> PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
 
         // Button animations
         B.btnPlayPause.setOnTouchListener(Anims::smallShrink);
@@ -242,7 +247,7 @@ public class PlayerFragment extends Fragment {
         B.rtl.setText(getTimeFormat(playerVM.getDuration()));
 
         // PlayerAdapter
-        B.playerRecycler.setLayoutManager(new LinearLayoutManager(PlayerFragment.this.getContext()));
+        B.playerRecycler.setLayoutManager(new LinearLayoutManager(PlayingFragment.this.getContext()));
         playerAdapter = new PlayerAdapter(onRecyclerClickListener);
         B.playerRecycler.setAdapter(playerAdapter);
 

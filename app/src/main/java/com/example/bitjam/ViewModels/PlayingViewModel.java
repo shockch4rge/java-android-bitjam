@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PlayerViewModel extends ViewModel {
+public class PlayingViewModel extends ViewModel {
     private final String TAG = "(PlayerViewModel)";
     private final MediaPlayer mp = new PureLiveData<>(new MediaPlayer()).getValue();
     private final List<Song> mPermSongs = new PureLiveData<>(new ArrayList<Song>()).getValue();
@@ -22,7 +22,7 @@ public class PlayerViewModel extends ViewModel {
     public final PureLiveData<Boolean> isLooping = new PureLiveData<>(false);
     public final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmpty());
     private final Random random = new Random();
-    private OnPlayerListener mPlayerListener;
+    private OnPlayingListener mPlayerListener;
 
     // Rather than stuff everything into one method, we should separate responsibilities
     // across multiple ones. This allows for more modularity over our code and helps to reduce
@@ -30,7 +30,7 @@ public class PlayerViewModel extends ViewModel {
     // to go.
 
     // Initialise listener without calling a method
-    public PlayerViewModel() {
+    public PlayingViewModel() {
         mp.setOnCompletionListener(mp -> mPlayerListener.onSongCompletion());
     }
 
@@ -233,7 +233,7 @@ public class PlayerViewModel extends ViewModel {
     }
 
     // PlayerFragment implements these listeners
-    public interface OnPlayerListener {
+    public interface OnPlayingListener {
         // Runs when playNext() is called
         void onNext();
 
@@ -252,7 +252,7 @@ public class PlayerViewModel extends ViewModel {
     }
 
     // initialises the listener
-    public void setOnPlayerListener(OnPlayerListener listener) {
+    public void setOnPlayerListener(OnPlayingListener listener) {
         this.mPlayerListener = listener;
     }
 }

@@ -79,13 +79,12 @@ public class LibraryFragment extends Fragment {
 
         // Observers
         songVM.getSongs().observe(getViewLifecycleOwner(), songs -> {
-            libraryAdapter.updateSongs(songs);
-            B.searchRecycler.scrollToPosition(0);
+            libraryAdapter.updateWith(songs);
             Anims.recyclerFall(B.searchRecycler);
         });
 
         libraryAdapter = new LibraryAdapter(onRecyclerClickListener);
-        B.searchRecycler.setLayoutManager(new LinearLayoutManager(LibraryFragment.this.getContext()));
+        B.searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         B.searchRecycler.setAdapter(libraryAdapter);
 
         // Listeners
@@ -111,6 +110,6 @@ public class LibraryFragment extends Fragment {
             }
         });
 
-        libraryAdapter.updateSongs(filtered);
+        libraryAdapter.updateWith(filtered);
     }
 }

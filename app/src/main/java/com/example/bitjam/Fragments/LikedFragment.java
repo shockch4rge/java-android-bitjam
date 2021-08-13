@@ -59,7 +59,7 @@ public class LikedFragment extends Fragment {
 
         // If there is a change in LikedSongs, update the adapter
         songVM.getLikedSongs().observe(getViewLifecycleOwner(), songs -> {
-            likedAdapter.updateAdapter(songs);
+            likedAdapter.updateWith(songs);
             Anims.recyclerFall(B.likedRecycler);
         });
 
@@ -69,7 +69,7 @@ public class LikedFragment extends Fragment {
 
         // Standard RecyclerView config
         likedAdapter = new LikedAdapter(onRecyclerClickListener);
-        B.likedRecycler.setLayoutManager(new LinearLayoutManager(LikedFragment.this.getContext()));
+        B.likedRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         B.likedRecycler.setAdapter(likedAdapter);
 

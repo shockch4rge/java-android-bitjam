@@ -31,17 +31,19 @@ public class PlaylistViewModel extends ViewModel {
     // myPlaylists is merely a localised instance of all the playlists from Firestore.
     // This makes updating the UI much easier, as all songs are added at the same time, rather than
     // waiting to iterate through the database.
+    @SuppressWarnings("unchecked")
     public void getPlaylistsFromDb(Query.Direction order) {
         db.collection("playlists")
                 .orderBy("title", order)
                 .get()
                 .addOnCompleteListener(task -> {
                     List<Playlist> tempPlaylists = new ArrayList<>();
-                    task.getResult().forEach(doc -> {
+
+                    task.getResult().forEach(docSnap -> {
                         Playlist playlist = new Playlist(
-                                doc.getId(),
-                                doc.getString("title"),
-                                (List<DocumentReference>) doc.get("songs"));
+                                docSnap.getId(),
+                                docSnap.getString("title"),
+                                (List<DocumentReference>) docSnap.get("songs"));
 
                         tempPlaylists.add(playlist);
                     });
@@ -65,8 +67,8 @@ public class PlaylistViewModel extends ViewModel {
         Playlist playlist = new Playlist(title);
         db.collection("playlists")
                 .add(playlist)
-                .addOnSuccessListener(documentReference ->
-                        addSongToExistingPlaylist(documentReference.getId(), songId))
+                .addOnSuccessListener(docRef ->
+                        addSongToExistingPlaylist(docRef.getId(), songId))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
     }
 
@@ -83,12 +85,12 @@ public class PlaylistViewModel extends ViewModel {
     // the app, e.g. whether the song is liked.
     public void addSongToExistingPlaylist(String playlistId, String songId) {
         // gets specified doc refs
-        DocumentReference songRef =
-                db.collection("songs")
-                        .document(songId);
         DocumentReference playlistRef =
                 db.collection("playlists")
                         .document(playlistId);
+        DocumentReference songRef =
+                db.collection("songs")
+                        .document(songId);
 
         // add the song ref to the existing playlist
         playlistRef.update("songs", FieldValue.arrayUnion(songRef))
@@ -101,17 +103,17 @@ public class PlaylistViewModel extends ViewModel {
     /**
      * Deletes a playlist at a specified path.
      *
-     * @param documentPath The playlist path to delete
+     * @param docRef The playlist path to delete
      */
     // We can delete a playlist in Firestore by referring to its document path. Nothing much to say.
-    public void deletePlaylistInDb(String documentPath) {
+    public void deletePlaylistInDb(String docRef) {
         db.collection("playlists")
-                .document(documentPath)
+                .document(docRef)
                 .delete()
                 .addOnSuccessListener(none -> Log.d(TAG,
-                        "Deleted " + documentPath + " from Firestore"))
+                        "Deleted " + docRef + " from Firestore"))
                 .addOnFailureListener(e -> Log.w(TAG,
-                        "Failed to delete " + documentPath + " from Firestore", e));
+                        "Failed to delete " + docRef + " from Firestore", e));
     }
 
     public PureLiveData<List<Playlist>> getPlaylists() {

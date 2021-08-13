@@ -1,5 +1,6 @@
 package com.example.bitjam.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,13 +41,13 @@ public class PlaylistsFragment extends Fragment {
         @Override
         public void onAscendingOrderSelected() {
             playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
-            Misc.toast(requireView(), "Sorting list by ascending!");
+            Misc.toast(requireView(), "Sorting by ascending!");
         }
 
         @Override
         public void onDescendingOrderSelected() {
             playlistVM.getPlaylistsFromDb(Query.Direction.DESCENDING);
-            Misc.toast(requireView(), "Sorting list by descending!");
+            Misc.toast(requireView(), "Sorting by descending!");
         }
     };
 
@@ -61,6 +62,7 @@ public class PlaylistsFragment extends Fragment {
         }
     };
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,19 +82,21 @@ public class PlaylistsFragment extends Fragment {
 
         // When there is a change in playlists, update PlaylistAdapter
         playlistVM.getPlaylists().observe(getViewLifecycleOwner(), playlists -> {
-            playlistAdapter.updatePlaylists(playlists);
+            playlistAdapter.updateWith(playlists);
             Anims.recyclerFall(B.playlistRecycler);
         });
 
         // Standard config for RecyclerView
         playlistAdapter = new PlaylistAdapter(onRecyclerClickListener, playlistVM);
-        B.playlistRecycler.setLayoutManager(new LinearLayoutManager(PlaylistsFragment.this.getContext()));
+        B.playlistRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // Sets left-swiping action for the recycler
         B.playlistRecycler.setAdapter(playlistAdapter);
 
         // Initialises a click listener which inflates a PopupMenu when clicked
         B.sortOrderPopup.setOnClickListener(view -> PopupBuilder.forSortOrder(view, onSortingMenuItemSelected));
+
+        B.sortOrderPopup.setOnTouchListener(Anims::smallShrink);
 
         return B.getRoot();
     }

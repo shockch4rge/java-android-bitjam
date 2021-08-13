@@ -59,7 +59,7 @@ public class DialogAddToPlaylist extends DialogFragment {
         /* End building */
 
         mDialogAdapter = new DialogAdapter(mOnRecyclerClickListener);
-        mDialogRecycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        mDialogRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         mDialogRecycler.setAdapter(mDialogAdapter);
 
         // If there is a change in playlists, update DialogAdapter

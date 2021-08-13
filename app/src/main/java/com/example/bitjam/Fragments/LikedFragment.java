@@ -15,8 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.Adapters.LikedAdapter;
-import com.example.bitjam.Adapters.OnRecyclerClickListener;
-import com.example.bitjam.Models.Playlist;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.example.bitjam.R;
 import com.example.bitjam.databinding.FragmentLikedBinding;
 import com.example.bitjam.Models.Song;
@@ -61,14 +60,12 @@ public class LikedFragment extends Fragment {
         // If there is a change in LikedSongs, update the adapter
         songVM.getLikedSongs().observe(getViewLifecycleOwner(), songs -> {
             likedAdapter.updateAdapter(songs);
-            Anims.setLayoutAnimFall(B.likedRecycler);
+            Anims.recyclerFall(B.likedRecycler);
         });
 
         likedSongs = songVM.getLikedSongs().getValue();
 
-        // Makes some text which says 'No Liked Songs' visible, if...there are no liked songs
-        if (likedSongs.isEmpty()) B.emptyListText.setVisibility(View.VISIBLE);
-        else B.emptyListText.setVisibility(View.GONE);
+        B.emptyListText.setVisibility(likedSongs.isEmpty() ? View.VISIBLE : View.GONE);
 
         // Standard RecyclerView config
         likedAdapter = new LikedAdapter(onRecyclerClickListener);

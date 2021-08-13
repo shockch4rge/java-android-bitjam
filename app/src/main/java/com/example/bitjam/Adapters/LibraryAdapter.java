@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bitjam.R;
 import com.example.bitjam.Models.Song;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHolder> {
     private final List<Song> mSongs;
@@ -65,9 +65,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.ViewHold
         // binds row details based on the song
         // also binds an onClickListener to the item view
         public void bind(Song song) {
-            songNameHolder.setText(song.getSongName());
-            artistNameHolder.setText(song.getArtistName());
-            Picasso.get().load(song.getCoverArtLink()).into(coverArtHolder);
+            songNameHolder.setText(song.getTitle());
+            artistNameHolder.setText(song.getArtist());
+            Picasso.get().load(song.getCoverUrl()).into(coverArtHolder);
             itemView.setOnClickListener(v -> mOnRecyclerClickListener.onItemClick(song));
         }
     }

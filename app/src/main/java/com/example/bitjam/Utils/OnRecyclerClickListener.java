@@ -1,4 +1,4 @@
-package com.example.bitjam.Adapters;
+package com.example.bitjam.Utils;
 
 /**
  * An interface for recycler click implementations.

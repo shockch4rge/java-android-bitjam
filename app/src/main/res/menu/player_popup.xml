@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/ADD_TO_NEW_PLAYLIST"
-        android:title="Add to New Playlist"
+        android:title="Create New Playlist"
         android:icon="@drawable/svg_plus"/>
 
     <item

@@ -26,24 +26,26 @@ public class PlaylistViewModel extends ViewModel {
     /**
      * Fetch all the playlists from Firestore and save it into myPlaylists.
      *
-     * @param sort The sorting order of the fetching. Can be {@link Query.Direction ASCENDING or DESCENDING}.
+     * @param order The sorting order of the fetching. Can be {@link Query.Direction ASCENDING or DESCENDING}.
      */
     // myPlaylists is merely a localised instance of all the playlists from Firestore.
     // This makes updating the UI much easier, as all songs are added at the same time, rather than
     // waiting to iterate through the database.
-    public void getPlaylistsFromDb(Query.Direction sort) {
+    public void getPlaylistsFromDb(Query.Direction order) {
         db.collection("playlists")
-                .orderBy("title", sort)
+                .orderBy("title", order)
                 .get()
                 .addOnCompleteListener(task -> {
                     List<Playlist> tempPlaylists = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        tempPlaylists.add(new Playlist(
+                    task.getResult().forEach(doc -> {
+                        Playlist playlist = new Playlist(
                                 doc.getId(),
                                 doc.getString("title"),
-                                (List<DocumentReference>) doc.get("songs")
-                        ));
-                    }
+                                (List<DocumentReference>) doc.get("songs"));
+
+                        tempPlaylists.add(playlist);
+                    });
+
                     myPlaylists.setValue(tempPlaylists);
                 })
                 .addOnFailureListener(e -> Log.w(TAG, "Failed to grab playlists from Firestore"));
@@ -90,8 +92,10 @@ public class PlaylistViewModel extends ViewModel {
 
         // add the song ref to the existing playlist
         playlistRef.update("songs", FieldValue.arrayUnion(songRef))
-                .addOnSuccessListener(none -> Log.d(TAG, String.format("(%s) added to [%s]", songRef.getId(), playlistRef.getId())))
-                .addOnFailureListener(e -> Log.w(TAG, String.format("Failed to append (%s) to [%s]", songRef.getId(), playlistRef.getId()) , e));
+                .addOnSuccessListener(none -> Log.d(TAG, String.format("(%s) added to [%s]",
+                        songRef.getId(), playlistRef.getId())))
+                .addOnFailureListener(e -> Log.w(TAG, String.format("Failed to append (%s) to [%s]",
+                        songRef.getId(), playlistRef.getId()) , e));
     }
 
     /**
@@ -104,8 +108,10 @@ public class PlaylistViewModel extends ViewModel {
         db.collection("playlists")
                 .document(documentPath)
                 .delete()
-                .addOnSuccessListener(none -> Log.d(TAG, "Deleted " + documentPath + " from Firestore"))
-                .addOnFailureListener(e -> Log.w(TAG, "Failed to delete " + documentPath + " in Firestore", e));
+                .addOnSuccessListener(none -> Log.d(TAG,
+                        "Deleted " + documentPath + " from Firestore"))
+                .addOnFailureListener(e -> Log.w(TAG,
+                        "Failed to delete " + documentPath + " from Firestore", e));
     }
 
     public PureLiveData<List<Playlist>> getPlaylists() {

@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.MainActivity;
 import com.example.bitjam.R;
-import com.example.bitjam.Adapters.OnRecyclerClickListener;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.example.bitjam.Adapters.LibraryAdapter;
 import com.example.bitjam.databinding.FragmentLibraryBinding;
 import com.example.bitjam.Models.Song;
@@ -52,13 +52,12 @@ public class LibraryFragment extends Fragment {
         }
     };
 
-    // transfers the clicked song to the fragment
+    // Select the song and go to PlayerFragment on click
     private final OnRecyclerClickListener<Song> onRecyclerClickListener = new OnRecyclerClickListener<Song>() {
         @Override
         public void onItemClick(Song song) {
             songVM.select(song);
 
-            // Navigates to PlayerFragment when a song is clicked
             NavController navController = NavHostFragment.findNavController(LibraryFragment.this);
             navController.navigate(LibraryFragmentDirections.NavigateToPlayerFromLibrary());
         }
@@ -78,20 +77,17 @@ public class LibraryFragment extends Fragment {
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);
         songVM.getSongsFromDb();
 
-
-        // When there is a change in songs, update this adapter. There should be none though.
+        // Observers
         songVM.getSongs().observe(getViewLifecycleOwner(), songs -> {
             libraryAdapter.updateSongs(songs);
             B.searchRecycler.scrollToPosition(0);
-            Anims.setLayoutAnimFall(B.searchRecycler);
+            Anims.recyclerFall(B.searchRecycler);
         });
 
-        // Attach the adapter to the RecyclerView. Without it, rows would not be populated.
         libraryAdapter = new LibraryAdapter(onRecyclerClickListener);
-        // Without LayoutManager, there would be no structure for RecyclerView to follow.
-        // Default layout params would be null
         B.searchRecycler.setLayoutManager(new LinearLayoutManager(LibraryFragment.this.getContext()));
         B.searchRecycler.setAdapter(libraryAdapter);
+
         // Listeners
         B.searchBar.addTextChangedListener(onTextChangedListener);
 
@@ -104,17 +100,17 @@ public class LibraryFragment extends Fragment {
         MainActivity.hideKeyboardIn(this.requireView());
     }
 
-    // updates the adapter for every letter typed in the search query
-    // songs from ViewModel get copied to 'filtered'
-    // adapter updates according to the filtered list
+    // Update adapter with filtered list for every letter
     private void filter(String text) {
         List<Song> filtered = new ArrayList<>();
+        List<Song> songs = songVM.getSongs().getValue();
 
-        for (Song song : songVM.getSongs().getValue()) {
-            if (song.getSongName().toLowerCase().contains(text.toLowerCase())) {
+        songs.forEach(song -> {
+            if (song.getTitle().toLowerCase().contains(text.toLowerCase())) {
                 filtered.add(song);
             }
-        }
+        });
+
         libraryAdapter.updateSongs(filtered);
     }
 }

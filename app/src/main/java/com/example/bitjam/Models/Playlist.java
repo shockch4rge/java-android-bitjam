@@ -5,9 +5,9 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.List;
 
 public class Playlist {
-    private String mTitle;
-    private String mId;
-    private List<DocumentReference> mSongs;
+    private String title;
+    private String id;
+    private List<DocumentReference> songs;
 
     public Playlist() {
         // required empty constructor for Firestore
@@ -15,26 +15,26 @@ public class Playlist {
 
     // We would use this when we want to create a new playlist. No song is needed.
     public Playlist(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     // We would use this when querying for all the available playlists from Firestore. We want to
     // fetch all the particulars of each playlist as well.
     public Playlist(String id, String title, List<DocumentReference> songs) {
-        mId = id;
-        mTitle = title;
-        mSongs = songs;
+        this.id = id;
+        this.title = title;
+        this.songs = songs;
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
-    public List<DocumentReference> getSongs() {
-        return mSongs;
+    public List<DocumentReference> getSongRefs() {
+        return songs;
     }
 }

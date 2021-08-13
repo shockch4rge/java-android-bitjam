@@ -15,7 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.Adapters.PlaylistAdapter;
-import com.example.bitjam.Adapters.OnRecyclerClickListener;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.R;
 import com.example.bitjam.Utils.Anims;
@@ -33,7 +33,6 @@ public class PlaylistsFragment extends Fragment {
     private PlaylistViewModel playlistVM;
     private SongViewModel songVM;
     private PlaylistAdapter playlistAdapter;
-    private Window ui;
 
     // field that stores anonymous inner class which implements OnPlayerListener
     // Took one minute to implement when I thought it was going to take an hour...
@@ -69,7 +68,7 @@ public class PlaylistsFragment extends Fragment {
         B = FragmentPlaylistsBinding.inflate(inflater, container, false);
 
         // UI
-        ui = this.requireActivity().getWindow();
+        Window ui = requireActivity().getWindow();
         ui.setStatusBarColor(getResources().getColor(R.color.white, null));
 
         // ViewModels
@@ -82,7 +81,7 @@ public class PlaylistsFragment extends Fragment {
         // When there is a change in playlists, update PlaylistAdapter
         playlistVM.getPlaylists().observe(getViewLifecycleOwner(), playlists -> {
             playlistAdapter.updatePlaylists(playlists);
-            Anims.setLayoutAnimFall(B.playlistRecycler);
+            Anims.recyclerFall(B.playlistRecycler);
         });
 
         // Standard config for RecyclerView

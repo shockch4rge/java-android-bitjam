@@ -9,9 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bitjam.Fragments.Dialogs.DialogAddToPlaylist;
 import com.example.bitjam.R;
 import com.example.bitjam.Models.Song;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,8 +28,6 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
      * @param listener Requires the {@link OnRecyclerClickListener} interface to perform click
      *                 functionality
      */
-    // We instead of passing a reference to the original liked songs, we instantiate a new local
-    // ArrayList as we want to be able to update the adapter's songs independently.
     public LikedAdapter(OnRecyclerClickListener<Song> listener) {
         mLikedSongs = new ArrayList<>();
         mRecyclerClickListener = listener;
@@ -64,9 +62,9 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
         }
 
         public void bind(Song song) {
-            songNameHolder.setText(song.getSongName());
-            artistNameHolder.setText(song.getArtistName());
-            Picasso.get().load(song.getCoverArtLink()).into(coverArtHolder);
+            songNameHolder.setText(song.getTitle());
+            artistNameHolder.setText(song.getArtist());
+            Picasso.get().load(song.getCoverUrl()).into(coverArtHolder);
             itemView.setOnClickListener(v -> mRecyclerClickListener.onItemClick(song));
         }
     }

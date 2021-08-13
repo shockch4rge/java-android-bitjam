@@ -1,7 +1,6 @@
 package com.example.bitjam.Adapters;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bitjam.R;
 import com.example.bitjam.Models.Playlist;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
 import com.example.bitjam.Utils.PopupBuilder;
 import com.example.bitjam.ViewModels.PlaylistViewModel;
 
@@ -74,7 +74,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         @SuppressLint("SetTextI18n")
         public void bind(Playlist playlist) {
-            int size = playlist.getSongs().size();
+            int size = playlist.getSongRefs().size();
             sizeHolder.setText(size + (size == 1 ? " song" : " songs"));
             titleHolder.setText(playlist.getTitle());
             itemView.setOnClickListener(view -> mRecyclerClickListener.onItemClick(playlist));

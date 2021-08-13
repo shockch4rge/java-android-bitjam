@@ -21,22 +21,20 @@ import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.bitjam.MainActivity;
-import com.example.bitjam.Models.Playlist;
 import com.example.bitjam.R;
 import com.example.bitjam.Adapters.PlayerAdapter;
-import com.example.bitjam.Adapters.OnRecyclerClickListener;
-import com.example.bitjam.Fragments.Dialogs.DialogAddToPlaylist;
-import com.example.bitjam.Fragments.Dialogs.DialogCreatePlaylist;
+import com.example.bitjam.Utils.OnRecyclerClickListener;
+import com.example.bitjam.Dialogs.DialogAddToPlaylist;
+import com.example.bitjam.Dialogs.DialogCreatePlaylist;
 import com.example.bitjam.Utils.Anims;
 import com.example.bitjam.Utils.Misc;
 import com.example.bitjam.Utils.PopupBuilder;
 import com.example.bitjam.ViewModels.PlaylistViewModel;
 import com.example.bitjam.databinding.FragmentPlayerBinding;
 import com.example.bitjam.Models.Song;
-import com.example.bitjam.ViewModels.PlayerViewModel;
+import com.example.bitjam.ViewModels.PlayingViewModel;
 import com.example.bitjam.ViewModels.SongViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -44,14 +42,15 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class PlayerFragment extends Fragment {
+public class PlayingFragment extends Fragment {
     private final String TAG = "(BitJam)";
     private FragmentPlayerBinding B;
     private SongViewModel songVM;
-    private PlayerViewModel playerVM;
+    private PlayingViewModel playerVM;
     private PlaylistViewModel playlistVM;
-    private BottomNavigationView navBar;
+    private BottomNavigationView mNavBar;
     private PlayerAdapter playerAdapter;
+    private View mBottomSheet;
     private Handler handler;
     private Window ui;
 
@@ -60,31 +59,33 @@ public class PlayerFragment extends Fragment {
         @Override
         public void onLike(Song song) {
             B.btnLike.setImageResource(R.drawable.svg_heart_selected);
-            Misc.toast(requireView(), "'" + song.getSongName() + "' liked!");
+            Misc.toast(requireView(), "'" + song.getTitle() + "' liked!");
         }
 
         @Override
         public void onUnlike(Song song) {
             B.btnLike.setImageResource(R.drawable.svg_heart_unselected);
-            Misc.toast(requireView(), "'" + song.getSongName() + "' un-liked!");
+            Misc.toast(requireView(), "'" + song.getTitle() + "' un-liked!");
         }
     };
 
     // Listens to specific events defined in PlayerViewModel
-    private final PlayerViewModel.OnPlayerListener onPlayerListener = new PlayerViewModel.OnPlayerListener() {
+    private final PlayingViewModel.OnPlayingListener onPlayingListener = new PlayingViewModel.OnPlayingListener() {
         // updates elapsed/remaining time when next/previous is pressed
         @Override
         public void onNext() {
             B.seekBar.setMax(playerVM.getDuration());
+            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnColourByFlag();
+            setLikedBtnBasedOnFlag();
         }
 
         @Override
         public void onPrevious() {
             B.seekBar.setMax(playerVM.getDuration());
+            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnColourByFlag();
+            setLikedBtnBasedOnFlag();
         }
 
         @Override
@@ -100,13 +101,8 @@ public class PlayerFragment extends Fragment {
         // automatically plays the next song
         @Override
         public void onSongCompletion() {
-            handler.removeCallbacks(refreshDetails);
+            handler.removeCallbacks(refreshSeekBar);
             playerVM.playNext();
-        }
-
-        @Override
-        public void onSongPrepared(Song prepared) {
-            updateUiFromSong(prepared);
         }
     };
 
@@ -114,12 +110,15 @@ public class PlayerFragment extends Fragment {
     private final SeekBar.OnSeekBarChangeListener onSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser) {
+                B.etl.setText(getTimeFormat(progress));
+            }
         }
 
         // Stops updating time labels even when song is playing
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-            handler.removeCallbacks(refreshDetails);
+            handler.removeCallbacks(refreshSeekBar);
         }
 
         // Updates time labels when finger is lifted off SeekBar thumb; also restarts recursive callbacks
@@ -127,32 +126,33 @@ public class PlayerFragment extends Fragment {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             playerVM.moveTo(seekBar.getProgress());
-            B.rtl.setText(getTimeFormat(playerVM.getCurrentPos()));
-            B.etl.setText(getTimeFormat(playerVM.getDuration() - playerVM.getCurrentPos()));
-            handler.postDelayed(refreshDetails, 500);
+            handler.postDelayed(refreshSeekBar, 500);
         }
     };
 
-    // Creates a PopupMenu with pre-defined choices
+    // Create PopupMenu with options
     private final PopupBuilder.OnPlayerMenuItemSelected onPlayerMenuItemSelected = new PopupBuilder.OnPlayerMenuItemSelected() {
         // Listens to 'Add to New Playlists' selection in the popup menu
         @Override
-        public void onAddToNewPlaylistSelected() {
-            Song thisSong = playerVM.getCurrentSong();
-
+        public void onCreatePlaylistSelected() {
             DialogCreatePlaylist dialog = new DialogCreatePlaylist();
 
-            dialog.setDialogListener(titleField -> {
-                String title = titleField.getText().toString();
+            dialog.setOnCreateChoiceClickListener(textInput -> {
+                String title = textInput.getText().toString();
+                Song thisSongId = playerVM.getCurrentSong();
+                String songId = thisSongId.getId();
+                String songTitle = thisSongId.getTitle();
 
                 // Dialog automatically closes on choice click; no need to manually do it
                 if (title.isEmpty()) {
-                    Misc.toast(requireView(), "Name cannot be empty!");
+                    Misc.toast(requireView(),
+                            "Name cannot be empty!");
                 } else {
-                    playlistVM.createNewPlaylist(title, thisSong.getId());
-                    Misc.toast(requireView(), "'" + title + "' created with '" + thisSong.getSongName() + "' added!");
+                    playlistVM.createNewPlaylist(title, songId);
+                    Misc.toast(requireView(),
+                            title + " created with '" + songTitle + "' added!");
                 }
-                MainActivity.hideKeyboardIn(requireView());
+                MainActivity.hideKeyboardIn(PlayingFragment.this.requireView());
             });
 
             dialog.show(getParentFragmentManager(), "OK");
@@ -161,15 +161,16 @@ public class PlayerFragment extends Fragment {
         // Listens to 'Add to Existing Playlist' selection in the popup menu
         @Override
         public void onAddToExistingPlaylistSelected() {
-            Song thisSong = playerVM.getCurrentSong();
 
             // Must cast to Playlist class before using parameter
             DialogAddToPlaylist dialog = new DialogAddToPlaylist(playlist -> {
-                playlistVM.addSongToExistingPlaylist(
-                        ((Playlist) playlist).getId(), thisSong.getId());
+                Song thisSong = playerVM.getCurrentSong();
+                String songId = thisSong.getId();
+                String songTitle = thisSong.getTitle();
+
+                playlistVM.addSongToExistingPlaylist(playlist.getId(), songId);
                 Misc.toast(requireView(),
-                        String.format("'%s' added to '%s'!",
-                                thisSong.getSongName(), ((Playlist) playlist).getTitle()));
+                        "'" + songTitle + " added to " + playlist.getTitle() + "!");
             });
 
             dialog.show(getParentFragmentManager(), "OK");
@@ -177,7 +178,6 @@ public class PlayerFragment extends Fragment {
     };
 
     // PlayerAdapter
-    // posts new song to VM, grabs the song and prepares it
     private final OnRecyclerClickListener<Song> onRecyclerClickListener = new OnRecyclerClickListener<Song>() {
         @Override
         public void onItemClick(Song song) {
@@ -187,182 +187,176 @@ public class PlayerFragment extends Fragment {
         }
     };
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // View Binding. Removes the need for 'findViewById(id)'
         B = FragmentPlayerBinding.inflate(inflater, container, false);
 
-        // Navigation bar UI
-        navBar = ((MainActivity) this.requireActivity()).findViewById(R.id.navBar);
-        navBar.setVisibility(View.GONE);
-
-        // UI
-        ui = this.requireActivity().getWindow();
-
         handler = new Handler();
 
         // ViewModels
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);
-        playerVM = new ViewModelProvider(requireActivity()).get(PlayerViewModel.class);
+        playerVM = new ViewModelProvider(requireActivity()).get(PlayingViewModel.class);
         playlistVM = new ViewModelProvider(requireActivity()).get(PlaylistViewModel.class);
 
-        // Initialises the queue
+        // Initialises the queue and loads playlists
         playerVM.updateQueue(songVM.getSongs().getValue());
-        playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
 
-        // PlayerAdapter
-        B.playerRecycler.setLayoutManager(new LinearLayoutManager(PlayerFragment.this.getContext()));
-        playerAdapter = new PlayerAdapter(onRecyclerClickListener);
-        B.playerRecycler.setAdapter(playerAdapter);
-
-        // When there is a change in the queue orientation, run these callbacks.
+        // Observers
         songVM.getSongs().observe(this, songs -> {
             playerAdapter.updateSongs(songs);
             B.playerRecycler.scrollToPosition(0);
-            Anims.setLayoutAnimFall(B.playerRecycler);
+            Anims.recyclerFall(B.playerRecycler);
         });
 
+        playerVM.currentSong.observe(this, this::updateUiFromSong);
         playerVM.isPlaying.observe(this, this::onIsPlayingChange);
         playerVM.isLooping.observe(this, this::onIsLoopingChange);
         playerVM.isShuffling.observe(this, this::onIsShuffledChange);
 
+        // Listeners
         songVM.setOnLikedListener(onLikedListener);
-        playerVM.setOnPlayerListener(onPlayerListener);
+        playerVM.setOnPlayerListener(onPlayingListener);
         B.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
-        B.btnPlaylistAdd.setOnClickListener(view ->
-                PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
 
-        // Extracts selected song details
-        Song songData = songVM.getSelectedSong().getValue();
-        String sID = songData.getId();
-        String sTitle = songData.getSongName();
-        String sArtist = songData.getArtistName();
-        String sLink = songData.getSongLink();
-        String sCoverArt = songData.getCoverArtLink();
-        boolean sIsLiked = songData.isLiked;
-
-        // Prepares the first-time set up of player.
-        Song newSong = new Song(sID, sTitle, sArtist, sLink, sCoverArt, sIsLiked);
-        playerVM.prepareSong(newSong);
-        B.seekBar.setMax(playerVM.getDuration());
-        B.etl.setText(getTimeFormat(playerVM.getCurrentPos()));
-        B.rtl.setText(getTimeFormat(playerVM.getDuration() - playerVM.getCurrentPos()));
-
-        // Button click listeners. They should only perform a single function.
+        // Separate functions from animations to reduce unnecessary clutter
+        B.btnPlaylistOptions.setOnClickListener(view -> PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
         B.btnPlayPause.setOnClickListener(view -> playerVM.togglePlayPause());
         B.btnNext.setOnClickListener(view -> playerVM.playNext());
         B.btnPrevious.setOnClickListener(view -> playerVM.playPrevious());
-        B.loopIcon.setOnClickListener(view -> playerVM.toggleLoop());
-        B.shuffleIcon.setOnClickListener(view -> playerVM.toggleShuffle());
+        B.btnLoop.setOnClickListener(view -> playerVM.toggleLoop());
+        B.btnShuffle.setOnClickListener(view -> playerVM.toggleShuffle());
         B.btnLike.setOnClickListener(this::toggleLikeOnSong);
+
+        // Button animations
+        B.btnPlayPause.setOnTouchListener(Anims::smallShrink);
+        B.btnNext.setOnTouchListener(Anims::smallShrink);
+        B.btnPrevious.setOnTouchListener(Anims::smallShrink);
+        B.btnLoop.setOnTouchListener(Anims::smallShrink);
+        B.btnShuffle.setOnTouchListener(Anims::smallShrink);
+        B.btnLike.setOnTouchListener(Anims::smallShrink);
+        B.btnPlaylistOptions.setOnTouchListener(Anims::smallShrink);
+
+        // Extracts selected song details
+        Song newSong = songVM.getSelectedSong().getValue();
+        playerVM.prepareSong(newSong);
+        B.seekBar.setMax(playerVM.getDuration());
+        B.rtl.setText(getTimeFormat(playerVM.getDuration()));
+
+        // PlayerAdapter
+        B.playerRecycler.setLayoutManager(new LinearLayoutManager(PlayingFragment.this.getContext()));
+        playerAdapter = new PlayerAdapter(onRecyclerClickListener);
+        B.playerRecycler.setAdapter(playerAdapter);
 
         playerVM.play();
 
         return B.getRoot();
     }
 
-    private void onIsPlayingChange(Boolean isPlaying) {
+    private void onIsPlayingChange(boolean isPlaying) {
         if (isPlaying) {
-            handler.postDelayed(refreshDetails, 500);
+            handler.postDelayed(refreshSeekBar, 500);
             B.btnPlayPause.setImageResource(R.drawable.svg_btn_pause);
         } else {
+            handler.removeCallbacks(refreshSeekBar);
             B.btnPlayPause.setImageResource(R.drawable.svg_btn_play);
-            handler.removeCallbacks(refreshDetails);
         }
     }
 
     private void onIsLoopingChange(boolean isLooping) {
-        B.loopIcon.setColorFilter(ContextCompat.getColor(
+        B.btnLoop.setColorFilter(ContextCompat.getColor(
                 requireActivity(),
                 isLooping ? R.color.pinkDefault : R.color.white)
         );
     }
 
     private void onIsShuffledChange(boolean isShuffling) {
-        B.shuffleIcon.setColorFilter(ContextCompat.getColor(
+        B.btnShuffle.setColorFilter(ContextCompat.getColor(
                 requireActivity(),
                 isShuffling ? R.color.pinkDefault : R.color.white
         ));
     }
 
+    // Find bottom UI from activity
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ui = requireActivity().getWindow();
+        mNavBar = requireActivity().findViewById(R.id.navBar);
+        mBottomSheet = requireActivity().findViewById(R.id.bottomSheet);
+    }
+
+    // Make bottom UI visible
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mNavBar.setVisibility(View.VISIBLE);
+        mBottomSheet.setVisibility(View.VISIBLE);
+    }
+
+    // No bottom UI while view exists
     @Override
     public void onResume() {
         super.onResume();
-        navBar.setVisibility(View.GONE);
+        mNavBar.setVisibility(View.GONE);
+        mBottomSheet.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        navBar.setVisibility(View.VISIBLE);
-    }
-
-    // updates the song title and artist name with current song data
-    // background is set based on dominant colour of the song's cover art
     private void updateUiFromSong(Song song) {
-        B.songHolder.setText(song.getSongName());
-        B.artistHolder.setText(song.getArtistName());
-        Picasso.get().load(song.getCoverArtLink()).into(B.coverArtHolder);
-        // Gets dominant swatch from image and sets the view's background colour
-        Picasso.get().load(song.getCoverArtLink()).into(swatchProcessor);
+        B.songHolder.setText(song.getTitle());
+        B.artistHolder.setText(song.getArtist());
+        Picasso.get().load(song.getCoverUrl()).into(B.coverArtHolder);
+        Picasso.get().load(song.getCoverUrl()).into(swatchProcessor);
     }
 
     // If the current song is already liked, remove it from liked and vice versa.
     private void toggleLikeOnSong(View v) {
-        Song thisSong = playerVM.getCurrentSong();
-        if (thisSong.isLiked) {
-            thisSong.setLiked(false);
-            songVM.removeFromLiked(thisSong);
+        Song currentSong = playerVM.getCurrentSong();
+        if (currentSong.isLiked) {
+            currentSong.setLiked(false);
+            songVM.removeFromLiked(currentSong);
         } else {
-            thisSong.setLiked(true);
-            songVM.addToLiked(thisSong);
+            currentSong.setLiked(true);
+            songVM.addToLiked(currentSong);
         }
     }
 
     // Updates the like button's ImageView based on the song's liked flag. Nothing much.
-    private void setLikedBtnColourByFlag() {
+    private void setLikedBtnBasedOnFlag() {
         Song song = playerVM.getCurrentSong();
-        if (song.isLiked) {
-            B.btnLike.setImageResource(R.drawable.svg_heart_selected);
-            return;
-        }
-        B.btnLike.setImageResource(R.drawable.svg_heart_unselected);
+        B.btnLike.setImageResource(song.isLiked
+                ? R.drawable.svg_heart_selected
+                : R.drawable.svg_heart_unselected);
     }
 
-    // anonymous inner class that updates time labels and seekBar progress every 0.5s
-    final Runnable refreshDetails = new Runnable() {
+    // For time labels
+    private String getTimeFormat(int duration) {
+        int min = duration / 1000 / 60;
+        int sec = duration / 1000 % 60;
+
+        return min + ":" + ((sec < 10) ? "0" + sec : sec);
+    }
+
+    // Update SeekBar and time labels every 0.5s
+    private final Runnable refreshSeekBar = new Runnable() {
         @Override
         public void run() {
             B.seekBar.setProgress(playerVM.getCurrentPos());
-            B.rtl.setText(getTimeFormat(playerVM.getCurrentPos()));
-            B.etl.setText(getTimeFormat(playerVM.getDuration() - playerVM.getCurrentPos()));
+            B.etl.setText(getTimeFormat(playerVM.getCurrentPos()));
             handler.postDelayed(this, 500);
         }
     };
 
-    // formats time labels
-    // if elapsed seconds is less than 10, time labels = e.g. (2:0 + sec) = 2:07
-    // otherwise time labels = e.g. (2: + elapsed seconds)
-    private String getTimeFormat(int duration) {
-        String timer;
-        int min = duration / 1000 / 60;
-        int sec = duration / 1000 % 60;
-
-        timer = min + ":" + ((sec < 10) ? "0" + sec : sec);
-
-        return timer;
-    }
-
-    // processes the dominant swatch of the current song's cover art
-    // sets the background of the layout and status bar colours
+    // Sets bg to dominant swatch of the cover art
     private final Target swatchProcessor = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            Palette.from(bitmap).maximumColorCount(16).generate(palette -> {
+            Palette.from(bitmap).generate(palette -> {
                 assert palette != null;
-                int dominantSwatch = Objects.requireNonNull(palette.getDominantSwatch()).getRgb();
+                assert palette.getDominantSwatch() != null;
+                int dominantSwatch = palette.getDominantSwatch().getRgb();
                 B.motionLayout.setBackgroundColor(dominantSwatch);
                 ui.setStatusBarColor(dominantSwatch);
             });

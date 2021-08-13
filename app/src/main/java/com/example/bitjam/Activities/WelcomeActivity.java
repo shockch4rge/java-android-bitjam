@@ -1,4 +1,4 @@
-package com.example.bitjam;
+package com.example.bitjam.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,9 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.bitjam.ViewModels.PlaylistViewModel;
-import com.example.bitjam.ViewModels.SongViewModel;
-import com.google.firebase.firestore.Query;
+import com.example.bitjam.MainActivity;
+import com.example.bitjam.R;
 
 
 public class WelcomeActivity extends AppCompatActivity {

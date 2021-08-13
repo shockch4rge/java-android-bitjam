@@ -68,6 +68,6 @@
         android:layout_alignParentBottom="true"
         android:layoutAnimation="@anim/layout_fall"
         android:overScrollMode="always"
-        tools:listitem="@layout/search_recycler_items" />
+        tools:listitem="@layout/library_recycler_items" />
 
 </RelativeLayout>

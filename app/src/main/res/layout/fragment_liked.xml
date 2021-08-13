@@ -32,6 +32,6 @@
         android:layout_height="match_parent"
         android:layout_below="@id/liked_header"
         android:layout_marginTop="35dp"
-        tools:listitem="@layout/search_recycler_items" />
+        tools:listitem="@layout/library_recycler_items" />
 
 </RelativeLayout>

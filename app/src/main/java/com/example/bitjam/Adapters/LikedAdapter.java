@@ -28,8 +28,6 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
      * @param listener Requires the {@link OnRecyclerClickListener} interface to perform click
      *                 functionality
      */
-    // We instead of passing a reference to the original liked songs, we instantiate a new local
-    // ArrayList as we want to be able to update the adapter's songs independently.
     public LikedAdapter(OnRecyclerClickListener<Song> listener) {
         mLikedSongs = new ArrayList<>();
         mRecyclerClickListener = listener;

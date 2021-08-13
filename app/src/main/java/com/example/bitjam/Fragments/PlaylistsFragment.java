@@ -33,7 +33,6 @@ public class PlaylistsFragment extends Fragment {
     private PlaylistViewModel playlistVM;
     private SongViewModel songVM;
     private PlaylistAdapter playlistAdapter;
-    private Window ui;
 
     // field that stores anonymous inner class which implements OnPlayerListener
     // Took one minute to implement when I thought it was going to take an hour...
@@ -69,7 +68,7 @@ public class PlaylistsFragment extends Fragment {
         B = FragmentPlaylistsBinding.inflate(inflater, container, false);
 
         // UI
-        ui = this.requireActivity().getWindow();
+        Window ui = requireActivity().getWindow();
         ui.setStatusBarColor(getResources().getColor(R.color.white, null));
 
         // ViewModels

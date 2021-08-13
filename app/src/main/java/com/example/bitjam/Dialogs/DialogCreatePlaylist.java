@@ -41,10 +41,10 @@ public class DialogCreatePlaylist extends DialogFragment {
     }
 
     public interface DialogCreatePlaylistListener {
-        void onCreateSelected(EditText titleField);
+        void onCreateSelected(EditText enteredText);
     }
 
-    public void setDialogListener(DialogCreatePlaylistListener listener) {
+    public void setOnCreateChoiceClickListener(DialogCreatePlaylistListener listener) {
         this.mDialogListener = listener;
     }
 }

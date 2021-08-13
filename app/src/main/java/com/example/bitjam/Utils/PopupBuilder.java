@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import com.example.bitjam.Fragments.PlayingFragment;
 import com.example.bitjam.Fragments.PlaylistsFragment;
 import com.example.bitjam.R;
 
@@ -24,7 +25,7 @@ public class PopupBuilder {
     // a better way to do it...
 
     /**
-     * Builds a popup menu for {@link com.example.bitjam.Fragments.PlayerFragment}'s
+     * Builds a popup menu for {@link PlayingFragment}'s
      * playlist button.
      *
      * @param v        The current view
@@ -39,7 +40,7 @@ public class PopupBuilder {
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.ADD_TO_NEW_PLAYLIST:
-                    mOnPlayerMenuItemSelectedCallback.onAddToNewPlaylistSelected();
+                    mOnPlayerMenuItemSelectedCallback.onCreatePlaylistSelected();
                     return true;
 
                 case R.id.ADD_TO_EXISTING_PLAYLIST:
@@ -127,7 +128,7 @@ public class PopupBuilder {
     }
 
     public interface OnPlayerMenuItemSelected {
-        void onAddToNewPlaylistSelected();
+        void onCreatePlaylistSelected();
 
         void onAddToExistingPlaylistSelected();
     }

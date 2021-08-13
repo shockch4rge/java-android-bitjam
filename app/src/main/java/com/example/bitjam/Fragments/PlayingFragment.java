@@ -35,11 +35,11 @@ import com.example.bitjam.Models.Song;
 import com.example.bitjam.ViewModels.PlayingViewModel;
 import com.example.bitjam.ViewModels.SongViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class PlayingFragment extends Fragment {
@@ -48,8 +48,9 @@ public class PlayingFragment extends Fragment {
     private SongViewModel songVM;
     private PlayingViewModel playerVM;
     private PlaylistViewModel playlistVM;
-    private BottomNavigationView navBar;
+    private BottomNavigationView mNavBar;
     private PlayerAdapter playerAdapter;
+    private View mBottomSheet;
     private Handler handler;
     private Window ui;
 
@@ -74,15 +75,17 @@ public class PlayingFragment extends Fragment {
         @Override
         public void onNext() {
             B.seekBar.setMax(playerVM.getDuration());
+            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnColourByFlag();
+            setLikedBtnBasedOnFlag();
         }
 
         @Override
         public void onPrevious() {
             B.seekBar.setMax(playerVM.getDuration());
+            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
             playerVM.disableLoop();
-            setLikedBtnColourByFlag();
+            setLikedBtnBasedOnFlag();
         }
 
         @Override
@@ -131,22 +134,23 @@ public class PlayingFragment extends Fragment {
     private final PopupBuilder.OnPlayerMenuItemSelected onPlayerMenuItemSelected = new PopupBuilder.OnPlayerMenuItemSelected() {
         // Listens to 'Add to New Playlists' selection in the popup menu
         @Override
-        public void onAddToNewPlaylistSelected() {
-            Song thisSong = playerVM.getCurrentSong();
-
+        public void onCreatePlaylistSelected() {
             DialogCreatePlaylist dialog = new DialogCreatePlaylist();
 
-            dialog.setDialogListener(titleField -> {
-                String title = titleField.getText().toString();
+            dialog.setOnCreateChoiceClickListener(textInput -> {
+                String title = textInput.getText().toString();
+                Song thisSongId = playerVM.getCurrentSong();
+                String songId = thisSongId.getId();
+                String songTitle = thisSongId.getTitle();
 
                 // Dialog automatically closes on choice click; no need to manually do it
                 if (title.isEmpty()) {
-                    Misc.toast(requireView(), "Name cannot be empty!");
-                } else {
-                    playlistVM.createNewPlaylist(title, thisSong.getId());
                     Misc.toast(requireView(),
-                            String.format("%s created with '%s' added!",
-                                    title, thisSong.getTitle()));
+                            "Name cannot be empty!");
+                } else {
+                    playlistVM.createNewPlaylist(title, songId);
+                    Misc.toast(requireView(),
+                            title + " created with '" + songTitle + "' added!");
                 }
                 MainActivity.hideKeyboardIn(PlayingFragment.this.requireView());
             });
@@ -157,15 +161,16 @@ public class PlayingFragment extends Fragment {
         // Listens to 'Add to Existing Playlist' selection in the popup menu
         @Override
         public void onAddToExistingPlaylistSelected() {
-            Song thisSong = playerVM.getCurrentSong();
 
             // Must cast to Playlist class before using parameter
             DialogAddToPlaylist dialog = new DialogAddToPlaylist(playlist -> {
-                playlistVM.addSongToExistingPlaylist(
-                        playlist.getId(), thisSong.getId());
+                Song thisSong = playerVM.getCurrentSong();
+                String songId = thisSong.getId();
+                String songTitle = thisSong.getTitle();
+
+                playlistVM.addSongToExistingPlaylist(playlist.getId(), songId);
                 Misc.toast(requireView(),
-                        String.format("%s added to '%s'!",
-                                thisSong.getTitle(), playlist.getTitle()));
+                        "'" + songTitle + " added to " + playlist.getTitle() + "!");
             });
 
             dialog.show(getParentFragmentManager(), "OK");
@@ -189,11 +194,6 @@ public class PlayingFragment extends Fragment {
         // View Binding. Removes the need for 'findViewById(id)'
         B = FragmentPlayerBinding.inflate(inflater, container, false);
 
-        // Navigation bar UI
-        navBar = ((MainActivity) this.requireActivity()).findViewById(R.id.navBar);
-        navBar.setVisibility(View.GONE);
-
-        ui = requireActivity().getWindow();
         handler = new Handler();
 
         // ViewModels
@@ -201,9 +201,8 @@ public class PlayingFragment extends Fragment {
         playerVM = new ViewModelProvider(requireActivity()).get(PlayingViewModel.class);
         playlistVM = new ViewModelProvider(requireActivity()).get(PlaylistViewModel.class);
 
-        // Initialises the queue
+        // Initialises the queue and loads playlists
         playerVM.updateQueue(songVM.getSongs().getValue());
-        playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
 
         // Observers
         songVM.getSongs().observe(this, songs -> {
@@ -222,7 +221,7 @@ public class PlayingFragment extends Fragment {
         playerVM.setOnPlayerListener(onPlayingListener);
         B.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
 
-        // Button listeners
+        // Separate functions from animations to reduce unnecessary clutter
         B.btnPlaylistOptions.setOnClickListener(view -> PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
         B.btnPlayPause.setOnClickListener(view -> playerVM.togglePlayPause());
         B.btnNext.setOnClickListener(view -> playerVM.playNext());
@@ -256,7 +255,7 @@ public class PlayingFragment extends Fragment {
         return B.getRoot();
     }
 
-    private void onIsPlayingChange(Boolean isPlaying) {
+    private void onIsPlayingChange(boolean isPlaying) {
         if (isPlaying) {
             handler.postDelayed(refreshSeekBar, 500);
             B.btnPlayPause.setImageResource(R.drawable.svg_btn_pause);
@@ -280,16 +279,29 @@ public class PlayingFragment extends Fragment {
         ));
     }
 
+    // Find bottom UI from activity
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ui = requireActivity().getWindow();
+        mNavBar = requireActivity().findViewById(R.id.navBar);
+        mBottomSheet = requireActivity().findViewById(R.id.bottomSheet);
+    }
+
+    // Make bottom UI visible
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mNavBar.setVisibility(View.VISIBLE);
+        mBottomSheet.setVisibility(View.VISIBLE);
+    }
+
+    // No bottom UI while view exists
     @Override
     public void onResume() {
         super.onResume();
-        navBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        navBar.setVisibility(View.VISIBLE);
+        mNavBar.setVisibility(View.GONE);
+        mBottomSheet.setVisibility(View.GONE);
     }
 
     private void updateUiFromSong(Song song) {
@@ -301,18 +313,18 @@ public class PlayingFragment extends Fragment {
 
     // If the current song is already liked, remove it from liked and vice versa.
     private void toggleLikeOnSong(View v) {
-        Song thisSong = playerVM.getCurrentSong();
-        if (thisSong.isLiked) {
-            thisSong.setLiked(false);
-            songVM.removeFromLiked(thisSong);
+        Song currentSong = playerVM.getCurrentSong();
+        if (currentSong.isLiked) {
+            currentSong.setLiked(false);
+            songVM.removeFromLiked(currentSong);
         } else {
-            thisSong.setLiked(true);
-            songVM.addToLiked(thisSong);
+            currentSong.setLiked(true);
+            songVM.addToLiked(currentSong);
         }
     }
 
     // Updates the like button's ImageView based on the song's liked flag. Nothing much.
-    private void setLikedBtnColourByFlag() {
+    private void setLikedBtnBasedOnFlag() {
         Song song = playerVM.getCurrentSong();
         B.btnLike.setImageResource(song.isLiked
                 ? R.drawable.svg_heart_selected
@@ -341,8 +353,9 @@ public class PlayingFragment extends Fragment {
     private final Target swatchProcessor = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            Palette.from(bitmap).maximumColorCount(16).generate(palette -> {
+            Palette.from(bitmap).generate(palette -> {
                 assert palette != null;
+                assert palette.getDominantSwatch() != null;
                 int dominantSwatch = palette.getDominantSwatch().getRgb();
                 B.motionLayout.setBackgroundColor(dominantSwatch);
                 ui.setStatusBarColor(dominantSwatch);

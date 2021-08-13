@@ -33,11 +33,11 @@ public class Anims {
      */
     public static boolean smallShrink(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+            v.animate().scaleX(1f).scaleY(1f).setDuration(30);
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100);
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50);
         }
 
         return false;

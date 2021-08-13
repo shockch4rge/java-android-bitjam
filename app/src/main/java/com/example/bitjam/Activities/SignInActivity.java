@@ -1,4 +1,4 @@
-package com.example.bitjam;
+package com.example.bitjam.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bitjam.MainActivity;
+import com.example.bitjam.R;
 import com.example.bitjam.Utils.GoogleServices;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

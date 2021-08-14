@@ -14,7 +14,11 @@ import androidx.fragment.app.DialogFragment;
 import com.example.bitjam.R;
 
 public class DialogCreatePlaylist extends DialogFragment {
-    private DialogCreatePlaylistListener mDialogListener;
+    private final DialogCreatePlaylistListener mDialogListener;
+
+    public DialogCreatePlaylist(DialogCreatePlaylistListener listener) {
+        mDialogListener = listener;
+    }
 
     @NonNull
     @Override
@@ -42,9 +46,5 @@ public class DialogCreatePlaylist extends DialogFragment {
 
     public interface DialogCreatePlaylistListener {
         void onCreateSelected(EditText enteredText);
-    }
-
-    public void setOnCreateChoiceClickListener(DialogCreatePlaylistListener listener) {
-        this.mDialogListener = listener;
     }
 }

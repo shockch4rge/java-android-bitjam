@@ -56,9 +56,9 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            songNameHolder = itemView.findViewById(R.id.recycler_row_song);
-            artistNameHolder = itemView.findViewById(R.id.recycler_row_artist);
-            coverArtHolder = itemView.findViewById(R.id.recycler_row_cover_art);
+            songNameHolder = itemView.findViewById(R.id.displaySongHolder);
+            artistNameHolder = itemView.findViewById(R.id.displayArtistHolder);
+            coverArtHolder = itemView.findViewById(R.id.displayCoverArtHolder);
         }
 
         public void bind(Song song) {

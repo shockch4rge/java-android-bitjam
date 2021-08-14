@@ -1,6 +1,7 @@
 package com.example.bitjam.ViewModels;
 
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
 
@@ -19,18 +20,12 @@ public class PlayingViewModel extends ViewModel {
     private final List<Song> mPermSongs = new PureLiveData<>(new ArrayList<Song>()).getValue();
     private final List<Song> mSongs = new PureLiveData<>(new ArrayList<Song>()).getValue();
     public final PureLiveData<Boolean> isPlaying = new PureLiveData<>(false);
-    public final PureLiveData<Boolean> isShuffling = new PureLiveData<>(false);
+    public final PureLiveData<Boolean> isShuffled = new PureLiveData<>(false);
     public final PureLiveData<Boolean> isLooping = new PureLiveData<>(false);
     public final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmpty());
-    private final Random random = new Random();
     private PlayerListener mPlayerListener;
 
-    // Rather than stuff everything into one method, we should separate responsibilities
-    // across multiple ones. This allows for more modularity over our code and helps to reduce
-    // coupling. I have extracted a few functions in this class, but there is much more de-linking
-    // to go.
-
-    // Initialise listener without calling a method
+    // Initialise self's completion listener
     public PlayingViewModel() {
         mp.setOnCompletionListener(mp -> mPlayerListener.onSongCompletion());
     }
@@ -60,27 +55,26 @@ public class PlayingViewModel extends ViewModel {
             mp.reset();
             mp.setDataSource(song.getSongUrl());
             mp.prepare();
-        } catch (IOException | IllegalStateException | IllegalArgumentException | SecurityException | NullPointerException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.w("(setDataSource)", "Invalid state.");
         }
+
         mPlayerListener.onSongPrepared();
     }
 
     public void togglePlayPause() {
         if (mp.isPlaying()) {
             pause();
-            return;
+        } else {
+            play();
         }
-        play();
     }
 
-    // Simple play method without having to worry about MediaPlayer's state or current song index.
     public void play() {
         mp.start();
         isPlaying.setValue(true);
     }
 
-    // Same as play.
     public void pause() {
         mp.pause();
         isPlaying.setValue(false);
@@ -90,33 +84,30 @@ public class PlayingViewModel extends ViewModel {
      * Play the next index of the current list (can be currently shuffled).
      * If the next song index >= the current list's size, restart from index 0.
      */
-    // Here, coupling can be reduced by making playNext play the next song without any checking
-    // of the song's current index. This separates the responsibility of playNext always needing to
-    // know of the song's current index/the song itself.
     public void playNext() {
         int nextSongIndex = mSongs.indexOf(getCurrentSong()) + 1;
+
         if (nextSongIndex >= mSongs.size()) {
+            // Restart from beginning of the queue
             nextSongIndex = 0;
         }
+
         prepareSong(mSongs.get(nextSongIndex));
         play();
         mPlayerListener.onNext();
     }
 
-    /**
-     * If the previous song index is less than 0 or the elapsed time is >= 3s, just replay the song.
-     */
-    // In conjunction with playNext, more coupling can be reduced by simply making playPrevious play
-    // the next song without checking the position of the player or the index location.
-    // getCurrentPos should not be associated with PlayerViewModel. However, just for
-    // convenience's sake, I have decided to go along with the coupling as it's not a severe issue.
     public void playPrevious() {
         int prevSongIndex = mSongs.indexOf(getCurrentSong()) - 1;
+
         if (prevSongIndex < 0) {
+            // Restart from beginning of the queue
             prevSongIndex = 0;
         } else if (getCurrentPos() >= 3000) {
+            // Restart from the same song
             prevSongIndex += 1;
         }
+
         prepareSong(mSongs.get(prevSongIndex));
         play();
         mPlayerListener.onPrevious();
@@ -132,9 +123,9 @@ public class PlayingViewModel extends ViewModel {
     public void toggleLoop() {
         if (mp.isLooping()) {
             disableLoop();
-            return;
+        } else {
+            enableLoop();
         }
-        enableLoop();
     }
 
     public void enableLoop() {
@@ -148,23 +139,23 @@ public class PlayingViewModel extends ViewModel {
     }
 
     public void toggleShuffle() {
-        if (isShuffling.getValue()) {
+        if (isShuffled.getValue()) {
             disableShuffle();
-            return;
+        } else {
+            enableShuffle();
         }
-        enableShuffle();
     }
 
     // mSongs is updated with a shuffled version of itself;
     // mPermSongs is unaffected.
     public void enableShuffle() {
         Collections.shuffle(mSongs);
-        isShuffling.setValue(true);
+        isShuffled.setValue(true);
         mPlayerListener.onShuffled(mSongs);
     }
 
     public void disableShuffle() {
-        isShuffling.setValue(false);
+        isShuffled.setValue(false);
         mPlayerListener.onUnshuffled(mPermSongs);
     }
 

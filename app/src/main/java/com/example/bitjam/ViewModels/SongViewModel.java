@@ -10,19 +10,18 @@ import com.example.bitjam.Utils.PureLiveData;
 import com.example.bitjam.Models.Song;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SongViewModel extends ViewModel {
     private final String TAG = "(Firestore)";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final PureLiveData<List<Song>> myLikedSongs = new PureLiveData<>(new ArrayList<>());
-    private final PureLiveData<Song> mSelectedSong = new PureLiveData<>(Song.getEmpty());
-    private final PureLiveData<List<Song>> mySongs = new PureLiveData<>(new ArrayList<>());
     private final PureLiveData<List<Song>> myPermSongs = new PureLiveData<>(new ArrayList<>());
+    private final PureLiveData<List<Song>> mySongs = new PureLiveData<>(new ArrayList<>());
+    private final PureLiveData<List<Song>> myLikedSongs = new PureLiveData<>(new ArrayList<>());
+    private final PureLiveData<Playlist> mSelectedPlaylist = new PureLiveData<>(Playlist.getEmpty());
+    public final PureLiveData<Song> selectedSong = new PureLiveData<>(Song.getEmpty());
     private OnLikedListener mOnLikedListener;
 
     /**
@@ -80,7 +79,7 @@ public class SongViewModel extends ViewModel {
      * @param song The song to select
      */
     public void select(Song song) {
-        mSelectedSong.setValue(song);
+        selectedSong.setValue(song);
     }
 
     // Favour select (stream) more, but this is more readable
@@ -95,7 +94,7 @@ public class SongViewModel extends ViewModel {
                 }
             }
         }
-        mSelectedSong.setValue(queue.get(0));
+        selectedSong.setValue(queue.get(0));
         mySongs.postValue(queue);
     }
 
@@ -116,7 +115,8 @@ public class SongViewModel extends ViewModel {
 
             queue.add(matchedSong);
         });
-        mSelectedSong.setValue(queue.get(0));
+        mSelectedPlaylist.setValue(playlist);
+        selectedSong.setValue(queue.get(0));
         mySongs.postValue(queue);
     }
 
@@ -125,7 +125,18 @@ public class SongViewModel extends ViewModel {
      * {@link Song#getEmpty()} otherwise.
      */
     public PureLiveData<Song> getSelectedSong() {
-        return mSelectedSong;
+        return selectedSong;
+    }
+
+    public PureLiveData<Playlist> getSelectedPlaylist() {
+        return mSelectedPlaylist;
+    }
+
+    /**
+     * Defaults the playlist title to 'All Songs'
+     */
+    public void clearSelectedPlaylist() {
+        mSelectedPlaylist.setValue(Playlist.getEmpty());
     }
 
     /**

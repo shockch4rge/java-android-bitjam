@@ -2,6 +2,7 @@ package com.example.bitjam.Models;
 
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
@@ -36,5 +37,9 @@ public class Playlist {
 
     public List<DocumentReference> getSongRefs() {
         return songs;
+    }
+
+    public static Playlist getEmpty() {
+        return new Playlist("", "", new ArrayList<>());
     }
 }

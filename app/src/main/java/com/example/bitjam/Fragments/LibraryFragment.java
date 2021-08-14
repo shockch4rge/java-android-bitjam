@@ -56,6 +56,7 @@ public class LibraryFragment extends Fragment {
     private final OnRecyclerClickListener<Song> onRecyclerClickListener = new OnRecyclerClickListener<Song>() {
         @Override
         public void onItemClick(Song song) {
+            songVM.clearSelectedPlaylist();
             songVM.select(song);
 
             NavController navController = NavHostFragment.findNavController(LibraryFragment.this);

@@ -8,6 +8,31 @@
     android:nestedScrollingEnabled="true"
     app:layoutDescription="@xml/fragment_player_scene">
 
+    <TextView
+        android:id="@+id/playingFromText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:fontFamily="@font/biko_regular"
+        android:text="PLAYING FROM:"
+        android:textColor="@color/grey"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playingFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/biko_bold"
+        android:text="All Songs"
+        android:textColor="@color/grey"
+        app:layout_constraintEnd_toEndOf="@id/playingFromText"
+        app:layout_constraintStart_toStartOf="@id/playingFromText"
+        app:layout_constraintTop_toBottomOf="@id/playingFromText" />
+
     <ImageView
         android:id="@+id/bgGradient"
         android:layout_width="match_parent"
@@ -21,7 +46,7 @@
         android:id="@+id/coverArtHolder"
         android:layout_width="345dp"
         android:layout_height="345dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="50dp"
         android:contentDescription="@string/recycler_row_cover_art_desc"
         android:elevation="20dp"
         android:scaleType="centerCrop"
@@ -65,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/svg_btn_add_to_playlist"
         app:layout_constraintBottom_toTopOf="@id/seekBar"
@@ -76,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toTopOf="@+id/seekBar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +111,7 @@
         android:id="@+id/seekBar"
         android:layout_width="370dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:progressBackgroundTint="@color/lightGrey"
         android:progressTint="@color/pinkDefault"
         android:thumbTint="@color/white"
@@ -140,7 +165,7 @@
         android:id="@+id/btnPlayPause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="35dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:backgroundTint="@color/white"
         android:contentDescription="@string/play_button_desc"
@@ -210,7 +235,7 @@
         android:id="@+id/recyclerBackground"
         android:layout_width="match_parent"
         android:layout_height="700dp"
-        android:layout_marginTop="675dp"
+        android:layout_marginTop="680dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="35dp"
         app:cardElevation="11dp"
@@ -242,6 +267,6 @@
         app:layout_constraintLeft_toLeftOf="@id/recyclerBackground"
         app:layout_constraintRight_toRightOf="@id/recyclerBackground"
         app:layout_constraintTop_toTopOf="@id/recyclerBackground"
-        tools:listitem="@layout/player_recycler_items" />
+        tools:listitem="@layout/default_recycler_items" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

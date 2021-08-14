@@ -16,7 +16,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navBar"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         app:itemIconTint="@drawable/bottom_nav_item_state"
@@ -34,16 +34,16 @@
             android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            android:background="@color/white"
             app:behavior_hideable="true"
-            app:behavior_peekHeight="60dp"
-            android:background="@color/white">
+            app:behavior_peekHeight="55dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/cover_art_placeholder"
-                android:scaleType="centerCrop"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cover_art_placeholder" />
 
         </androidx.core.widget.NestedScrollView>
 

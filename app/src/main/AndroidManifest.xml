@@ -11,16 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BitJam.Final">
-        <activity android:name=".Activities.SignInActivity"
+        <activity android:name=".activities.SignInActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <activity android:name=".MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.WelcomeActivity"
+        <activity android:name=".activities.WelcomeActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SplashActivity"
+        <activity android:name=".activities.SplashActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>

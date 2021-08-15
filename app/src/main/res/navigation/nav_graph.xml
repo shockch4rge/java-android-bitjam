@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/nav_library"
-        android:name="com.example.bitjam.Fragments.LibraryFragment"
+        android:name="com.example.bitjam.fragments.LibraryFragment"
         android:label="LibraryFragment">
         <action
             android:id="@+id/NavigateToPlayerFromLibrary"
@@ -28,11 +28,11 @@
     </fragment>
     <fragment
         android:id="@+id/nav_player"
-        android:name="com.example.bitjam.Fragments.PlayingFragment"
+        android:name="com.example.bitjam.fragments.PlayingFragment"
         android:label="PlayerFragment" />
     <fragment
         android:id="@+id/nav_liked"
-        android:name="com.example.bitjam.Fragments.LikedFragment"
+        android:name="com.example.bitjam.fragments.LikedFragment"
         android:label="LikedFragment">
         <action
             android:id="@+id/NavigateToPlayerFromLiked"
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_playlists"
-        android:name="com.example.bitjam.Fragments.PlaylistsFragment"
+        android:name="com.example.bitjam.fragments.PlaylistsFragment"
         android:label="PlaylistsFragment">
         <action
             android:id="@+id/NavigateToPlayerFromPlaylists"

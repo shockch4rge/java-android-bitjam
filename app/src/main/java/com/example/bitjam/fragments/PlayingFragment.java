@@ -75,7 +75,7 @@ public class PlayingFragment extends Fragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
-                B.etl.setText(getTimeFormat(progress));
+                B.elapsedTimeText.setText(getTimeFormat(progress));
             }
         }
 
@@ -101,14 +101,13 @@ public class PlayingFragment extends Fragment {
         public void onCreatePlaylistSelected() {
             DialogCreatePlaylist dialog = new DialogCreatePlaylist(textInput -> {
                 String title = textInput.getText().toString();
-                Song thisSong = playerVM.getCurrentSong();
-                String songId = thisSong.getId();
-                String songTitle = thisSong.getTitle();
+                Song currentSong = playerVM.getCurrentSong();
+                String songId = currentSong.getId();
+                String songTitle = currentSong.getTitle();
 
                 // Dialog automatically closes on choice click; no need to manually do it
                 if (title.isEmpty()) {
-                    Misc.toast(requireView(),
-                            "Name cannot be empty!");
+                    Misc.toast(requireView(), "Name cannot be empty!");
                 } else {
                     playlistVM.createNewPlaylist(title, songId);
                     Misc.toast(requireView(), title + " created with '" + songTitle + "' added!");
@@ -144,11 +143,11 @@ public class PlayingFragment extends Fragment {
     };
 
     // Listens to specific events defined in PlayerViewModel
-    private final PlayingViewModel.PlayerListener playerListener = new PlayingViewModel.PlayerListener() {
+    private final PlayingViewModel.Listener playerListener = new PlayingViewModel.Listener() {
         @Override
         public void onSongPrepared() {
-            B.seekBar.setMax(playerVM.getDuration());
-            B.rtl.setText(getTimeFormat(playerVM.getDuration()));
+            B.progressBar.setMax(playerVM.getDuration());
+            B.remainingTimeText.setText(getTimeFormat(playerVM.getDuration()));
             setLikedBtnBasedOnFlag();
         }
 
@@ -193,7 +192,7 @@ public class PlayingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // View Binding. Removes the need for 'findViewById(id)'
+        // View binding
         B = FragmentPlayerBinding.inflate(inflater, container, false);
         handler = new Handler();
 
@@ -211,7 +210,6 @@ public class PlayingFragment extends Fragment {
             B.playerRecycler.scrollToPosition(0);
             Anims.recyclerFall(B.playerRecycler);
         });
-
         songVM.selectedSong.observe(this, this::onCurrentSongChange);
         playerVM.currentSong.observe(this, this::updateUiFromSong);
         playerVM.isPlaying.observe(this, this::onIsPlayingChange);
@@ -221,7 +219,7 @@ public class PlayingFragment extends Fragment {
         // Listeners
         songVM.setOnLikedListener(onLikedListener);
         playerVM.setPlayerListener(playerListener);
-        B.seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
+        B.progressBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
 
         // Separate functions from animations to reduce unnecessary clutter
         B.btnPlaylistOptions.setOnClickListener(view -> PopupBuilder.forPlayer(view, onPlayerMenuItemSelected));
@@ -230,6 +228,7 @@ public class PlayingFragment extends Fragment {
         B.btnPrevious.setOnClickListener(view -> playerVM.playPrevious());
         B.btnLoop.setOnClickListener(view -> playerVM.toggleLoop());
         B.btnShuffle.setOnClickListener(view -> playerVM.toggleShuffle());
+        B.btnBackPress.setOnClickListener(this::onBackPressed);
         B.btnLike.setOnClickListener(this::toggleLikeOnSong);
 
         // Button animations
@@ -239,6 +238,7 @@ public class PlayingFragment extends Fragment {
         B.btnPrevious.setOnTouchListener(Anims::smallShrink);
         B.btnLoop.setOnTouchListener(Anims::smallShrink);
         B.btnShuffle.setOnTouchListener(Anims::smallShrink);
+        B.btnBackPress.setOnTouchListener(Anims::smallShrink);
         B.btnLike.setOnTouchListener(Anims::smallShrink);
 
         // PlayerAdapter
@@ -281,13 +281,17 @@ public class PlayingFragment extends Fragment {
         ));
     }
 
+    private void onBackPressed(View v) {
+        requireActivity().onBackPressed();
+    }
+
     // Find bottom UI from activity
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ui = requireActivity().getWindow();
         mNavBar = requireActivity().findViewById(R.id.navBar);
-        mBottomSheet = requireActivity().findViewById(R.id.bottomSheet);
+//        mBottomSheet = requireActivity().findViewById(R.id.bottomSheet);
     }
 
     // Make bottom UI visible
@@ -295,7 +299,7 @@ public class PlayingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mNavBar.setVisibility(View.VISIBLE);
-        mBottomSheet.setVisibility(View.VISIBLE);
+//        mBottomSheet.setVisibility(View.VISIBLE);
     }
 
     // No bottom UI while view exists
@@ -303,7 +307,7 @@ public class PlayingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mNavBar.setVisibility(View.GONE);
-        mBottomSheet.setVisibility(View.GONE);
+//        mBottomSheet.setVisibility(View.GONE);
     }
 
     private void updateUiFromSong(Song song) {
@@ -349,8 +353,8 @@ public class PlayingFragment extends Fragment {
     private final Runnable updatingSeekBar = new Runnable() {
         @Override
         public void run() {
-            B.seekBar.setProgress(playerVM.getCurrentPos());
-            B.etl.setText(getTimeFormat(playerVM.getCurrentPos()));
+            B.progressBar.setProgress(playerVM.getCurrentPos());
+            B.elapsedTimeText.setText(getTimeFormat(playerVM.getCurrentPos()));
             handler.postDelayed(this, 500);
         }
     };

@@ -20,7 +20,7 @@ public class SongViewModel extends ViewModel {
     private final PureLiveData<List<Song>> myPermSongs = new PureLiveData<>(new ArrayList<>());
     private final PureLiveData<List<Song>> mySongs = new PureLiveData<>(new ArrayList<>());
     private final PureLiveData<List<Song>> myLikedSongs = new PureLiveData<>(new ArrayList<>());
-    private final PureLiveData<Playlist> mSelectedPlaylist = new PureLiveData<>(Playlist.getEmpty());
+    private final PureLiveData<Playlist> selectedPlaylist = new PureLiveData<>(Playlist.getEmpty());
     public final PureLiveData<Song> selectedSong = new PureLiveData<>(Song.getEmpty());
     private OnLikedListener mOnLikedListener;
 
@@ -40,8 +40,8 @@ public class SongViewModel extends ViewModel {
                                 doc.getString("artist"),
                                 doc.getString("fileUrl"),
                                 doc.getString("coverUrl"),
-                                doc.getBoolean("isLiked"));
-
+                                doc.getBoolean("isLiked")
+                        );
                         tempSongs.add(song);
                     });
                     if (myPermSongs.getValue().isEmpty()) {
@@ -115,7 +115,7 @@ public class SongViewModel extends ViewModel {
 
             queue.add(matchedSong);
         });
-        mSelectedPlaylist.setValue(playlist);
+        selectedPlaylist.setValue(playlist);
         selectedSong.setValue(queue.get(0));
         mySongs.postValue(queue);
     }
@@ -129,14 +129,14 @@ public class SongViewModel extends ViewModel {
     }
 
     public PureLiveData<Playlist> getSelectedPlaylist() {
-        return mSelectedPlaylist;
+        return selectedPlaylist;
     }
 
     /**
      * Defaults the playlist title to 'All Songs'
      */
     public void clearSelectedPlaylist() {
-        mSelectedPlaylist.setValue(Playlist.getEmpty());
+        selectedPlaylist.setValue(Playlist.getEmpty());
     }
 
     /**

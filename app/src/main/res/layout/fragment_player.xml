@@ -8,8 +8,19 @@
     android:nestedScrollingEnabled="true"
     app:layoutDescription="@xml/fragment_player_scene">
 
+    <ImageView
+        android:id="@+id/btn_back_press"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="15dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/svg_back_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:id="@+id/playingFromText"
+        android:id="@+id/playing_from_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -22,19 +33,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/playingFrom"
+        android:id="@+id/playing_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/biko_bold"
         android:text="All Songs"
         android:textColor="@color/grey"
-        app:layout_constraintEnd_toEndOf="@id/playingFromText"
-        app:layout_constraintStart_toStartOf="@id/playingFromText"
-        app:layout_constraintTop_toBottomOf="@id/playingFromText" />
+        app:layout_constraintEnd_toEndOf="@id/playing_from_text"
+        app:layout_constraintStart_toStartOf="@id/playing_from_text"
+        app:layout_constraintTop_toBottomOf="@id/playing_from_text" />
 
     <ImageView
-        android:id="@+id/bgGradient"
+        android:id="@+id/bg_gradient"
         android:layout_width="match_parent"
         android:layout_height="850dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -43,7 +54,7 @@
         app:srcCompat="@drawable/bg_gradient" />
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/coverArtHolder"
+        android:id="@+id/cover_art_holder"
         android:layout_width="345dp"
         android:layout_height="345dp"
         android:layout_marginTop="50dp"
@@ -56,7 +67,7 @@
         app:srcCompat="@drawable/cover_art_placeholder" />
 
     <TextView
-        android:id="@+id/songHolder"
+        android:id="@+id/song_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -69,10 +80,10 @@
         android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coverArtHolder" />
+        app:layout_constraintTop_toBottomOf="@+id/cover_art_holder" />
 
     <TextView
-        android:id="@+id/artistHolder"
+        android:id="@+id/artist_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -81,34 +92,34 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="@+id/songHolder"
-        app:layout_constraintStart_toStartOf="@+id/songHolder"
-        app:layout_constraintTop_toBottomOf="@+id/songHolder" />
+        app:layout_constraintEnd_toEndOf="@+id/song_holder"
+        app:layout_constraintStart_toStartOf="@+id/song_holder"
+        app:layout_constraintTop_toBottomOf="@+id/song_holder" />
 
     <ImageView
-        android:id="@+id/btnPlaylistOptions"
+        android:id="@+id/btn_playlist_options"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
         android:layout_marginBottom="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/svg_btn_add_to_playlist"
-        app:layout_constraintBottom_toTopOf="@id/seekBar"
+        app:layout_constraintBottom_toTopOf="@id/progress_bar"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/btnLike"
+        android:id="@+id/btn_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="23dp"
         android:layout_marginBottom="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar"
+        app:layout_constraintBottom_toTopOf="@+id/progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/svg_heart_unselected" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/progress_bar"
         android:layout_width="370dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
@@ -117,10 +128,10 @@
         android:thumbTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/artistHolder" />
+        app:layout_constraintTop_toBottomOf="@+id/artist_holder" />
 
     <TextView
-        android:id="@+id/etl"
+        android:id="@+id/elapsed_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -130,10 +141,10 @@
         android:textColor="@color/white"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
     <TextView
-        android:id="@+id/rtl"
+        android:id="@+id/remaining_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -143,10 +154,10 @@
         android:textColor="@color/white"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
     <ImageView
-        android:id="@+id/btnPrevious"
+        android:id="@+id/btn_previous"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -155,14 +166,14 @@
         android:contentDescription="@string/previous_song"
         android:elevation="5dp"
         android:padding="7dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlayPause"
-        app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnPlayPause"
+        app:layout_constraintTop_toTopOf="@+id/btn_play_pause"
         app:srcCompat="@drawable/svg_btn_prev" />
 
     <ImageView
-        android:id="@+id/btnPlayPause"
+        android:id="@+id/btn_play_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
@@ -172,11 +183,11 @@
         android:elevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar"
         app:srcCompat="@drawable/btn_play_pause" />
 
     <ImageView
-        android:id="@+id/btnNext"
+        android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
@@ -185,14 +196,14 @@
         android:contentDescription="@string/next_song"
         android:elevation="5dp"
         android:padding="7dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlayPause"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
-        app:layout_constraintTop_toTopOf="@+id/btnPlayPause"
+        app:layout_constraintStart_toEndOf="@+id/btn_play_pause"
+        app:layout_constraintTop_toTopOf="@+id/btn_play_pause"
         app:srcCompat="@drawable/svg_btn_next" />
 
     <ImageView
-        android:id="@+id/btnLoop"
+        android:id="@+id/btn_loop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
@@ -200,39 +211,39 @@
         android:backgroundTint="@color/white"
         android:contentDescription="@string/loop_icon_desc"
         android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnPlayPause"
+        app:layout_constraintBottom_toBottomOf="@id/btn_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnPlayPause"
-        app:layout_constraintTop_toTopOf="@id/btnPlayPause"
+        app:layout_constraintStart_toEndOf="@id/btn_play_pause"
+        app:layout_constraintTop_toTopOf="@id/btn_play_pause"
         app:srcCompat="@drawable/svg_btn_loop_unselected" />
 
     <ImageView
-        android:id="@+id/btnShuffle"
+        android:id="@+id/btn_shuffle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:backgroundTint="@color/white"
         android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnPlayPause"
+        app:layout_constraintBottom_toBottomOf="@id/btn_play_pause"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btnPrevious"
-        app:layout_constraintTop_toTopOf="@id/btnPlayPause"
+        app:layout_constraintRight_toLeftOf="@id/btn_previous"
+        app:layout_constraintTop_toTopOf="@id/btn_play_pause"
         app:srcCompat="@drawable/svg_btn_shuffle_unselected" />
 
     <ImageView
-        android:id="@+id/handle"
+        android:id="@+id/queue_dragger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="20dp"
         android:paddingTop="7dp"
         android:paddingBottom="30dp"
-        app:layout_constraintEnd_toEndOf="@id/recyclerBackground"
-        app:layout_constraintStart_toStartOf="@id/recyclerBackground"
-        app:layout_constraintTop_toTopOf="@id/recyclerBackground"
+        app:layout_constraintEnd_toEndOf="@id/recycler_bg"
+        app:layout_constraintStart_toStartOf="@id/recycler_bg"
+        app:layout_constraintTop_toTopOf="@id/recycler_bg"
         app:srcCompat="@drawable/svg_collapser" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/recyclerBackground"
+        android:id="@+id/recycler_bg"
         android:layout_width="match_parent"
         android:layout_height="700dp"
         android:layout_marginTop="685dp"
@@ -244,7 +255,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/queueText"
+        android:id="@+id/queue_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -253,20 +264,20 @@
         android:text="@string/queue"
         android:textColor="@color/lightGrey"
         android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="@id/recyclerBackground"
-        app:layout_constraintRight_toRightOf="@id/recyclerBackground"
-        app:layout_constraintTop_toTopOf="@id/recyclerBackground" />
+        app:layout_constraintLeft_toLeftOf="@id/recycler_bg"
+        app:layout_constraintRight_toRightOf="@id/recycler_bg"
+        app:layout_constraintTop_toTopOf="@id/recycler_bg" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playerRecycler"
+        android:id="@+id/player_recycler"
         android:layout_width="match_parent"
         android:layout_height="530dp"
         android:layout_marginTop="55dp"
         android:elevation="12dp"
         android:overScrollMode="never"
-        app:layout_constraintLeft_toLeftOf="@id/recyclerBackground"
-        app:layout_constraintRight_toRightOf="@id/recyclerBackground"
-        app:layout_constraintTop_toTopOf="@id/recyclerBackground"
+        app:layout_constraintLeft_toLeftOf="@id/recycler_bg"
+        app:layout_constraintRight_toRightOf="@id/recycler_bg"
+        app:layout_constraintTop_toTopOf="@id/recycler_bg"
         tools:listitem="@layout/default_recycler_items" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

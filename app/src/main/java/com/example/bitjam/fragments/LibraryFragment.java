@@ -66,17 +66,17 @@ public class LibraryFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) throws InflateException {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // View Binding. Removes the need for 'findViewById(id)'
         FragmentLibraryBinding B = FragmentLibraryBinding.inflate(inflater, container, false);
 
         // UI
-        ui = this.requireActivity().getWindow();
+        ui = requireActivity().getWindow();
         ui.setStatusBarColor(requireActivity().getResources().getColor(R.color.white, null));
 
         // ViewModels
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);
-        songVM.getSongsFromDb();
+//        songVM.getSongsFromDb();
 
         // Observers
         songVM.getSongs().observe(getViewLifecycleOwner(), songs -> {
@@ -97,7 +97,7 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        MainActivity.hideKeyboardIn(this.requireView());
+        MainActivity.hideKeyboardIn(requireView());
     }
 
     // Update adapter with filtered list for every letter

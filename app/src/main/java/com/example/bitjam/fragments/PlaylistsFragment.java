@@ -78,7 +78,7 @@ public class PlaylistsFragment extends Fragment {
         songVM = new ViewModelProvider(requireActivity()).get(SongViewModel.class);
 
         // update local cache with playlists from Firestore
-        playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
+//        playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
 
         // When there is a change in playlists, update PlaylistAdapter
         playlistVM.getPlaylists().observe(getViewLifecycleOwner(), playlists -> {

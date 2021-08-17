@@ -21,11 +21,11 @@ public class PlayingViewModel extends ViewModel {
     public final PureLiveData<Boolean> isShuffled = new PureLiveData<>(false);
     public final PureLiveData<Boolean> isLooping = new PureLiveData<>(false);
     public final PureLiveData<Song> currentSong = new PureLiveData<>(Song.getEmpty());
-    private PlayerListener mPlayerListener;
+    private Listener mListener;
 
     // Initialise self's completion listener
     public PlayingViewModel() {
-        mp.setOnCompletionListener(mp -> mPlayerListener.onSongCompletion());
+        mp.setOnCompletionListener(mp -> mListener.onSongCompletion());
     }
 
     /**
@@ -57,7 +57,7 @@ public class PlayingViewModel extends ViewModel {
             e.printStackTrace();
         }
 
-        mPlayerListener.onSongPrepared();
+        mListener.onSongPrepared();
     }
 
     public void togglePlayPause() {
@@ -92,7 +92,7 @@ public class PlayingViewModel extends ViewModel {
 
         prepareSong(mSongs.get(nextSongIndex));
         play();
-        mPlayerListener.onNext();
+        mListener.onNext();
     }
 
     public void playPrevious() {
@@ -108,7 +108,7 @@ public class PlayingViewModel extends ViewModel {
 
         prepareSong(mSongs.get(prevSongIndex));
         play();
-        mPlayerListener.onPrevious();
+        mListener.onPrevious();
     }
 
     /**
@@ -149,12 +149,12 @@ public class PlayingViewModel extends ViewModel {
     public void enableShuffle() {
         Collections.shuffle(mSongs);
         isShuffled.setValue(true);
-        mPlayerListener.onShuffled(mSongs);
+        mListener.onShuffled(mSongs);
     }
 
     public void disableShuffle() {
         isShuffled.setValue(false);
-        mPlayerListener.onUnshuffled(mPermSongs);
+        mListener.onUnshuffled(mPermSongs);
     }
 
     /**
@@ -192,7 +192,7 @@ public class PlayingViewModel extends ViewModel {
     }
 
     // PlayerFragment implements these listeners
-    public interface PlayerListener {
+    public interface Listener {
 
         void onSongPrepared();
 
@@ -214,7 +214,7 @@ public class PlayingViewModel extends ViewModel {
     }
 
     // initialises the listener
-    public void setPlayerListener(PlayerListener listener) {
-        this.mPlayerListener = listener;
+    public void setPlayerListener(Listener listener) {
+        this.mListener = listener;
     }
 }

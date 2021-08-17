@@ -9,18 +9,35 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.bitjam.viewmodels.PlaylistViewModel;
+import com.example.bitjam.viewmodels.SongViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.Query;
 
 public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_hub);
+
+        SongViewModel songVM = new ViewModelProvider(this).get(SongViewModel.class);
+        PlaylistViewModel playlistVM = new ViewModelProvider(this).get(PlaylistViewModel.class);
+
+        songVM.getSongsFromDb();
+        playlistVM.getPlaylistsFromDb(Query.Direction.ASCENDING);
 
         // Day UI
         int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE |
@@ -33,24 +50,24 @@ public class MainActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
 
         BottomNavigationView bottomNav = findViewById(R.id.navBar);
-        View bottomSheet = findViewById(R.id.bottomSheet);
-
-        BottomSheetBehavior<View> mBottomSheet = BottomSheetBehavior.from(bottomSheet);
-
-        mBottomSheet.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-        bottomSheet.setOnClickListener(view ->
-                mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED));
+//        View bottomSheet = findViewById(R.id.bottomSheet);
+//
+//        BottomSheetBehavior<View> mBottomSheet = BottomSheetBehavior.from(bottomSheet);
+//
+//        mBottomSheet.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//
+//            }
+//        });
+//
+//        bottomSheet.setOnClickListener(view ->
+//                mBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED));
 
         // Fragment Navigation
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()

@@ -16,14 +16,6 @@ public class PopupBuilder {
     private static OnPlayerMenuItemSelected mOnPlayerMenuItemSelectedCallback;
     private static OnSortingMenuItemSelected mOnSortingMenuItemSelected;
 
-    // Creating multiple PopupMenus can and will result in a large amount of duplicated code that
-    // gets scattered everywhere. This results in a lot of code smell and hence we should extract
-    // the builder methods and compact them into a single one that we can call directly. The use of
-    // a static context allows us to use the method without instantiating its class, which helps to
-    // reduce memory usage from exposing unnecessary methods. I've done my best to delegate different
-    // popups into their own methods, but there is still a ton of repeated code. There is actually
-    // a better way to do it...
-
     /**
      * Builds a popup menu for {@link PlayingFragment}'s
      * playlist button.
@@ -117,10 +109,6 @@ public class PopupBuilder {
         popup.show();
     }
 
-    // These nested interfaces allow any classes/anonymous inner classes that implement them to
-    // trigger any callbacks without holding any actual references to this class. This is one of the
-    // best ways to reduce coupling. However, too many methods in a listener can congest/dirty code
-    // if used for various means, making some of the forced implemented methods useless.
     public interface OnPlaylistMenuItemSelected {
         void onEditPlaylistNameItemSelected();
 

@@ -19,7 +19,7 @@
 
     <EditText
         android:id="@+id/dialogEnterNameField"
-        android:layout_width="200dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialogTitle"
         android:layout_gravity="center_horizontal"
@@ -27,6 +27,7 @@
         android:fontFamily="@font/biko_regular"
         android:hint="Playlist Name"
         android:textColorHint="@color/pinkPale"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:backgroundTint="@color/white"/>
 
 </RelativeLayout>

@@ -9,15 +9,15 @@
                 app:customBoolean="false" />
         </Constraint>
         <Constraint
-            android:id="@+id/handle"
+            android:id="@+id/queue_dragger"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="20dp"
-            app:layout_constraintEnd_toEndOf="@id/recyclerBackground"
-            app:layout_constraintStart_toStartOf="@id/recyclerBackground"
-            app:layout_constraintTop_toTopOf="@id/recyclerBackground" />
+            app:layout_constraintEnd_toEndOf="@id/recycler_bg"
+            app:layout_constraintStart_toStartOf="@id/recycler_bg"
+            app:layout_constraintTop_toTopOf="@id/recycler_bg" />
         <Constraint
-            android:id="@+id/bgGradient"
+            android:id="@+id/bg_gradient"
             android:layout_width="match_parent"
             android:layout_height="850dp"
             app:layout_constraintHorizontal_bias="0.0"
@@ -28,7 +28,7 @@
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:id="@+id/recyclerBackground"
+            android:id="@+id/recycler_bg"
             android:layout_width="match_parent"
             android:layout_height="700dp"
             android:layout_marginTop="130dp"
@@ -37,34 +37,34 @@
             app:layout_constraintTop_toTopOf="parent"
             app:transitionEasing="cubic(0,1,1,0)" />
         <Constraint
-            android:id="@+id/seekBar"
+            android:id="@+id/progress_bar"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="200dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/artistHolder" />
+            app:layout_constraintTop_toBottomOf="@+id/artist_holder" />
         <Constraint
-            android:id="@+id/songHolder"
+            android:id="@+id/song_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="45dp"
             android:textAlignment="viewStart"
-            app:layout_constraintStart_toEndOf="@id/coverArtHolder"
+            app:layout_constraintStart_toEndOf="@id/cover_art_holder"
             app:layout_constraintTop_toTopOf="parent" />
         <Constraint
-            android:id="@+id/artistHolder"
+            android:id="@+id/artist_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textAlignment="viewStart"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/songHolder"
-            app:layout_constraintTop_toBottomOf="@+id/songHolder"
+            app:layout_constraintStart_toStartOf="@+id/song_holder"
+            app:layout_constraintTop_toBottomOf="@+id/song_holder"
             app:layout_constraintVertical_bias="0.0" />
         <Constraint
-            android:id="@+id/coverArtHolder"
+            android:id="@+id/cover_art_holder"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="30dp"
@@ -73,24 +73,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <Constraint
-            android:id="@+id/handle"
+            android:id="@+id/queue_dragger"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="20dp"
-            app:layout_constraintEnd_toEndOf="@id/recyclerBackground"
-            app:layout_constraintStart_toStartOf="@id/recyclerBackground"
-            app:layout_constraintTop_toTopOf="@id/recyclerBackground" />
+            app:layout_constraintEnd_toEndOf="@id/recycler_bg"
+            app:layout_constraintStart_toStartOf="@id/recycler_bg"
+            app:layout_constraintTop_toTopOf="@id/recycler_bg" />
         <Constraint
-            android:id="@+id/playingFrom"
+            android:id="@+id/playing_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            app:layout_constraintTop_toBottomOf="@id/playingFromText"
-            app:layout_constraintStart_toStartOf="@id/playingFromText"
-            app:layout_constraintEnd_toEndOf="@id/playingFromText"
+            app:layout_constraintTop_toBottomOf="@id/playing_from_text"
+            app:layout_constraintStart_toStartOf="@id/playing_from_text"
+            app:layout_constraintEnd_toEndOf="@id/playing_from_text"
             android:alpha="0" />
         <Constraint
-            android:id="@+id/playingFromText"
+            android:id="@+id/playing_from_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
@@ -105,31 +105,31 @@
         app:constraintSetStart="@+id/start"
         app:motionInterpolator="cubic(0,0.86,1,0)">
         <OnSwipe
-            app:touchAnchorId="@id/recyclerBackground"
+            app:touchAnchorId="@id/recycler_bg"
             app:touchAnchorSide="bottom"
-            app:touchRegionId="@id/handle" />
+            app:touchRegionId="@id/queue_dragger" />
         <KeyFrameSet>
             <KeyPosition
                 app:framePosition="40"
                 app:keyPositionType="deltaRelative"
-                app:motionTarget="@+id/coverArtHolder"
+                app:motionTarget="@+id/cover_art_holder"
                 app:percentY="0.9"
                 app:sizePercent="0.7" />
             <KeyAttribute
-                app:motionTarget="@+id/playingFrom"
+                app:motionTarget="@+id/playing_from"
                 app:framePosition="10"
                 android:alpha="0" />
             <KeyAttribute
-                app:motionTarget="@+id/playingFromText"
+                app:motionTarget="@+id/playing_from_text"
                 app:framePosition="10"
                 android:alpha="0" />
             <KeyPosition
-                app:motionTarget="@+id/playingFromText"
+                app:motionTarget="@+id/playing_from_text"
                 app:framePosition="8"
                 app:keyPositionType="deltaRelative"
                 app:percentY="1.0" />
             <KeyPosition
-                app:motionTarget="@+id/playingFrom"
+                app:motionTarget="@+id/playing_from"
                 app:framePosition="8"
                 app:keyPositionType="deltaRelative"
                 app:percentY="1.0" />

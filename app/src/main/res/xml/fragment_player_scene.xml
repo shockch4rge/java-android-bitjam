@@ -31,7 +31,7 @@
             android:id="@+id/recycler_bg"
             android:layout_width="match_parent"
             android:layout_height="700dp"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="310dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
             android:id="@+id/progress_bar"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="140dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_holder" />
@@ -48,30 +48,29 @@
             android:id="@+id/song_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="45dp"
-            android:textAlignment="viewStart"
-            app:layout_constraintStart_toEndOf="@id/cover_art_holder"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cover_art_holder" />
         <Constraint
             android:id="@+id/artist_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAlignment="viewStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/song_holder"
+            app:layout_constraintEnd_toEndOf="@id/song_holder"
             app:layout_constraintTop_toBottomOf="@+id/song_holder"
             app:layout_constraintVertical_bias="0.0" />
         <Constraint
             android:id="@+id/cover_art_holder"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:elevation="6dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="21dp" />
         <Constraint
             android:id="@+id/queue_dragger"
             android:layout_width="match_parent"
@@ -109,12 +108,6 @@
             app:touchAnchorSide="bottom"
             app:touchRegionId="@id/queue_dragger" />
         <KeyFrameSet>
-            <KeyPosition
-                app:framePosition="40"
-                app:keyPositionType="deltaRelative"
-                app:motionTarget="@+id/cover_art_holder"
-                app:percentY="0.9"
-                app:sizePercent="0.7" />
             <KeyAttribute
                 app:motionTarget="@+id/playing_from"
                 app:framePosition="10"
@@ -125,12 +118,12 @@
                 android:alpha="0" />
             <KeyPosition
                 app:motionTarget="@+id/playing_from_text"
-                app:framePosition="8"
+                app:framePosition="10"
                 app:keyPositionType="deltaRelative"
                 app:percentY="1.0" />
             <KeyPosition
                 app:motionTarget="@+id/playing_from"
-                app:framePosition="8"
+                app:framePosition="10"
                 app:keyPositionType="deltaRelative"
                 app:percentY="1.0" />
 
